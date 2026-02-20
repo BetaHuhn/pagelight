@@ -1,0 +1,68 @@
+"use client";
+
+import { C, THEMES } from "../../lib/theme";
+import { Widget } from "../widgets/Widget";
+
+export function ArticleRenderer({ data }) {
+  const theme = THEMES[data.theme] || THEMES.financial;
+  const { accent, dim: accentDim } = theme;
+
+  return (
+    <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", background: C.bg, minHeight: "100%", padding: "60px 24px 100px" }}>
+      <style>{`
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        @keyframes growBar { from { transform: scaleY(0); transform-origin: bottom; } to { transform: scaleY(1); transform-origin: bottom; } }
+      `}</style>
+      <div style={{ maxWidth: 780, margin: "0 auto" }}>
+
+        <header style={{ marginBottom: 52, animation: "fadeUp 0.5s ease 0.1s both" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <div style={{ height: 1, width: 32, background: accent }} />
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase" }}>
+              {data.theme} · {data.date}
+            </span>
+          </div>
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 5vw, 54px)", fontWeight: 900, color: C.white, lineHeight: 1.08, letterSpacing: "-0.02em", margin: "0 0 20px" }}>
+            {data.title}
+          </h1>
+          {data.deck && (
+            <p style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 18, fontWeight: 300, color: C.muted, lineHeight: 1.65, margin: "0 0 20px" }}>
+              {data.deck}
+            </p>
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 20, borderTop: `1px solid ${C.border}` }}>
+            {data.byline && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: C.muted }}>{data.byline}</span>}
+          </div>
+        </header>
+
+        {(data.sections || []).map((section, idx) => (
+          <div key={idx} style={{ animation: `fadeUp 0.5s ease ${0.15 + idx * 0.04}s both` }}>
+            {section.type === "prose" && (
+              <section style={{ marginBottom: 32 }}>
+                {section.heading && (
+                  <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, fontWeight: 700, color: C.white, marginBottom: 20, paddingBottom: 14, borderBottom: `1px solid ${C.border}` }}>
+                    {section.heading}
+                  </h2>
+                )}
+                {(section.paragraphs || []).map((para, pi) => (
+                  <p key={pi} style={{ fontSize: 16, fontWeight: 300, color: C.body, lineHeight: 1.85, marginBottom: 18 }}>{para}</p>
+                ))}
+              </section>
+            )}
+            {section.type === "widget" && <Widget section={section} accent={accent} accentDim={accentDim} />}
+          </div>
+        ))}
+
+        <footer style={{ marginTop: 64, paddingTop: 24, borderTop: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ height: 1, width: 24, background: accentDim }} />
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}>
+              {data.byline}{data.date ? `${data.date}` : ""}
+            </span>
+          </div>
+          {data.source && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}>Source: {data.source}</span>}
+        </footer>
+      </div>
+    </div>
+  );
+}

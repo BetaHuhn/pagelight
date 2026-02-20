@@ -1,16 +1,21 @@
-// ─── Theme ────────────────────────────────────────────────────────────────────
-export const T = {
-  bg:       "#07070a",
-  surface:  "#0f0f12",
-  panel:    "#141418",
-  border:   "#1e1e24",
-  accent:   "#c8f04a",     // electric lime
-  accentDim:"#4a5a18",
-  text:     "#dddbd5",
-  muted:    "#55554f",
-  white:    "#ffffff",
-  red:      "#f04a4a",
+// ─── Design tokens ────────────────────────────────────────────────────────────
+export const C = {
+  bg:      "#0a0a0b",
+  surface: "#111113",
+  panel:   "#16161a",
+  border:  "#222225",
+  text:    "#e8e6e0",
+  body:    "#b0aea8",
+  muted:   "#8e8e89",
+  white:   "#ffffff",
+  red:     "#e05c5c",
+  borderRadius: 14
 };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-export function cc(...classes: (string | undefined | null | false)[]) { return classes.filter(Boolean).join(" "); }
+export const THEMES = {
+  financial:   { accent: "#f5a623", dim: "#5c3c0a" },
+  tech:        { accent: "#5ce0d4", dim: "#0e3d3a" },
+  political:   { accent: "#e05c5c", dim: "#4a1515" },
+  environment: { accent: "#6ed96e", dim: "#1a4a1a" },
+  economy:     { accent: "#a78bfa", dim: "#2d1f6e" },
+};
