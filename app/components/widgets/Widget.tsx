@@ -6,11 +6,16 @@ import { BubbleChart } from "./BubbleChart";
 import { ComparisonTable } from "./ComparisonTable";
 import { DonutChart } from "./DonutChart";
 import { Gauge } from "./Gauge";
+import { Heatmap } from "./Heatmap";
+import { KpiScorecards } from "./KpiScorecards";
 import { LineChart } from "./LineChart";
 import { ProgressBars } from "./ProgressBars";
+import { SlopeChart } from "./SlopeChart";
 import { StatComparison } from "./StatComparison";
+import { Timeline } from "./Timeline";
 import { TimelineMagnitude } from "./TimelineMagnitude";
 import { UnitChart } from "./UnitChart";
+import { WaterfallChart } from "./WaterfallChart";
 import { WaveCounter } from "./WaveCounter";
 import { WidgetLabel } from "./WidgetLabel";
 
@@ -26,6 +31,8 @@ export function Widget({ section, accent, accentDim }) {
     items: p.items ?? [],
     rows: p.rows ?? [],
     points: p.points ?? [],
+    cells: p.cells ?? [],
+    steps: p.steps ?? [],
     value: p.value ?? 0,
     highlighted: p.highlighted ?? 0,
     total: p.total ?? 100,
@@ -49,6 +56,9 @@ export function Widget({ section, accent, accentDim }) {
       case "line-chart":
         chart = <LineChart {...p} points={safe.points} {...shared} />;
         break;
+      case "timeline":
+        chart = <Timeline {...p} events={safe.events} align={safe.align} {...shared} />;
+        break;
       case "timeline-magnitude":
         chart = <TimelineMagnitude {...p} events={safe.events} {...shared} />;
         break;
@@ -67,6 +77,18 @@ export function Widget({ section, accent, accentDim }) {
       case "comparison-table":
         chart = <ComparisonTable {...p} rows={safe.rows} {...shared} />;
         break;
+      case "slope-chart":
+        chart = <SlopeChart {...p} items={safe.items} accent={accent} />;
+        break;
+      case "heatmap":
+        chart = <Heatmap {...p} cells={safe.cells} accent={accent} />;
+        break;
+      case "waterfall-chart":
+        chart = <WaterfallChart {...p} steps={safe.steps} {...shared} />;
+        break;
+      case "kpi-scorecards":
+        chart = <KpiScorecards {...p} items={safe.items} accent={accent} />;
+        break;
       default:
         chart = (
           <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "12px 0" }}>
@@ -83,12 +105,12 @@ export function Widget({ section, accent, accentDim }) {
   }
 
   return (
-    <div style={{ margin: "40px 0", background: C.surface, border: `1px solid ${C.border}`, borderRadius: C.borderRadius, padding: 28, animation: "fadeUp 0.5s ease both" }}>
+    <div data-widget-type={widgetType} style={{ margin: "40px 0", background: C.surface, border: `1px solid ${C.border}`, borderRadius: C.borderRadius, padding: 28, animation: "fadeUp 0.5s ease both" }}>
       {label && <WidgetLabel text={label} accent={accent} accentDim={accentDim} />}
       {chart}
       {insight && (
         <div style={{ marginTop: 22, padding: "12px 16px", background: accent + "0d", border: `1px solid ${accentDim}`, borderRadius: C.borderRadius - 5 }}>
-          <p style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.body, margin: 0, lineHeight: 1.6 }}>{insight}</p>
+          <p style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.body, margin: 0, lineHeight: 1.6 }}>➔ {insight}</p>
         </div>
       )}
     </div>

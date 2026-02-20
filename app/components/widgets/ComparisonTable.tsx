@@ -22,11 +22,10 @@ export function ComparisonTable({ highlight, unit, rows, accent, accentDim }) {
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
             style={{
-              display: "grid", gridTemplateColumns: "140px 1fr 52px auto",
+              display: "grid", gridTemplateColumns: "140px 1fr auto auto",
               alignItems: "center", gap: 14, padding: "10px 14px",
               background: hovered === i ? C.panel : "transparent",
-              borderRadius: 2, cursor: "default", transition: "background 0.15s",
-              border: isHL ? `1px solid ${accentDim}` : "1px solid transparent",
+              borderRadius: C.borderRadius - 6, cursor: "default", transition: "background 0.15s",
             }}>
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: isHL ? accent : C.muted, fontWeight: isHL ? 600 : 400 }}>{row.name}</span>
             <div style={{ height: 4, background: C.border, borderRadius: 2, overflow: "hidden" }}>
@@ -38,7 +37,7 @@ export function ComparisonTable({ highlight, unit, rows, accent, accentDim }) {
                 boxShadow: isHL ? `0 0 8px ${accent}40` : "none",
               }} />
             </div>
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: isHL ? accent : C.muted, textAlign: "right" }}>{row.value}{unit || ""}</span>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: isHL ? accent : C.muted, textAlign: "right", flexShrink: 0 }}>{row.value}{unit || ""}</div>
             {row.note && <span style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 11, color: C.muted }}>{row.note}</span>}
           </div>
         );

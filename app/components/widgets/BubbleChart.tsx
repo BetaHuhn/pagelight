@@ -1,82 +1,139 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useMemo } from "react";
+import { Bubble } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  LinearScale,
+  PointElement,
+  Tooltip,
+} from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+
+ChartJS.register(LinearScale, PointElement, Tooltip, ChartDataLabels);
 
 export function BubbleChart({ bubbles, unit, accent, accentDim }) {
-  const canvasRef = useRef(null);
+  if (!bubbles?.length) {
+    return (
+      <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "6px 0" }}>
+        No data for bubble chart.
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let raf, startTs = null;
-    const DURATION = 1600;
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+  const { data, options } = useMemo(() => {
+    const maxVal = Math.max(...bubbles.map((b) => b.value));
+    const n = bubbles.length;
+    const cols = Math.ceil(Math.sqrt(n * 1.5));
+    const rows = Math.ceil(n / cols);
+    const MAX_R = 62;
+    const MIN_R = 16;
+
+    const formatLabel = (label) => (label.length > 12 ? `${label.slice(0, 11)}…` : label);
+    const formatTiny = (label) => {
+      const compact = String(label).replace(/\s+/g, "");
+      if (!compact) return "";
+      return compact.slice(0, 3).toUpperCase();
     };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
 
-    const maxVal = Math.max(...bubbles.map(b => b.value));
-    const MAX_R = 62, MIN_R = 16;
+    const points = bubbles.map((b, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const r = MIN_R + Math.sqrt(b.value / maxVal) * (MAX_R - MIN_R);
+      return {
+        x: col + 1,
+        y: rows - row,
+        r,
+        label: b.label,
+        value: b.value,
+      };
+    });
 
-    function draw(ts) {
-      if (!startTs) startTs = ts;
-      const W = canvas.width, H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
-      const n = bubbles.length;
-      const cols = Math.ceil(Math.sqrt(n * 1.5));
-      const rows = Math.ceil(n / cols);
-      const cellW = W / cols, cellH = H / rows;
+    const maxR = Math.max(...points.map((p) => p.r));
+    const pad = Math.ceil(maxR + 10);
 
-      bubbles.forEach((b, i) => {
-        const staggerP = ease(Math.max(0, ((ts - startTs) - i * 80) / DURATION));
-        const targetR = MIN_R + Math.sqrt(b.value / maxVal) * (MAX_R - MIN_R);
-        const r = targetR * staggerP;
-        const col = i % cols, row = Math.floor(i / cols);
-        const cx = cellW * col + cellW / 2;
-        const cy = cellH * row + cellH / 2;
-        const isTop = b.value === maxVal;
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.fillStyle = isTop ? accent + "2a" : accentDim + "55";
-        ctx.fill();
-        ctx.strokeStyle = isTop ? accent : accentDim;
-        ctx.lineWidth = isTop ? 1.5 : 1;
-        ctx.stroke();
-
-        if (r > 18) {
-          const short = b.label.length > 10 ? b.label.slice(0, 9) + "…" : b.label;
-          ctx.fillStyle = isTop ? accent : C.muted;
-          ctx.font = `${Math.min(11, r * 0.38)}px 'IBM Plex Mono', monospace`;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(short, cx, r > 28 ? cy - 7 : cy);
-          if (r > 28) {
-            ctx.font = `bold ${Math.min(13, r * 0.4)}px 'Playfair Display', serif`;
-            ctx.fillStyle = C.white;
-            ctx.fillText(b.value.toLocaleString(), cx, cy + 9);
-          }
-        }
-      });
-      raf = requestAnimationFrame(draw);
-    }
-    raf = requestAnimationFrame(draw);
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
+    const data = {
+      datasets: [
+        {
+          data: points,
+          backgroundColor: points.map((p) => (p.value === maxVal ? `${accent}2a` : `${accentDim}55`)),
+          borderColor: points.map((p) => (p.value === maxVal ? accent : accentDim)),
+          borderWidth: points.map((p) => (p.value === maxVal ? 1.6 : 1)),
+          hoverBorderColor: accent,
+          clip: false,
+        },
+      ],
     };
-  }, [bubbles, accent, accentDim]);
+
+    const getPoint = (ctx) => ctx?.dataset?.data?.[ctx.dataIndex] ?? ctx?.raw;
+
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: { top: pad, bottom: pad, left: pad, right: pad },
+      },
+      scales: {
+        x: { display: false, min: 0, max: cols + 1 },
+        y: { display: false, min: 0, max: rows + 1 },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const raw = ctx.raw;
+              const value = raw?.value ?? 0;
+              return `${raw?.label ?? ""}: ${value.toLocaleString()}${unit ? ` ${unit}` : ""}`;
+            },
+          },
+        },
+        datalabels: {
+          align: "center",
+          anchor: "center",
+          clip: false,
+          display: true,
+          color: (ctx) => {
+            const p = getPoint(ctx);
+            const r = p?.r ?? 0;
+            if (p?.value === maxVal) return r > 24 ? C.white : accent;
+            return r > 24 ? C.white : C.muted;
+          },
+          formatter: (value, ctx) => {
+            const p = getPoint(ctx);
+            const r = p?.r ?? 0;
+            const label = formatLabel(p?.label ?? "");
+            if (r < 22) return formatTiny(p?.label ?? "");
+            if (r < 34) return label;
+            return [label, (p?.value ?? 0).toLocaleString()];
+          },
+          font: (ctx) => {
+            const p = getPoint(ctx);
+            const r = p?.r ?? 0;
+            return {
+              family: "'IBM Plex Mono', monospace",
+              size: Math.max(9, Math.min(12, r * 0.28)),
+              weight: r > 28 ? "600" : "500",
+            };
+          },
+        },
+      },
+    };
+
+    return { data, options };
+  }, [bubbles, unit, accent, accentDim]);
 
   return (
     <div>
-      <canvas ref={canvasRef} style={{ width: "100%", height: 240, display: "block" }} />
-      {unit && <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, textAlign: "center", marginTop: 8, letterSpacing: "0.1em" }}>{unit}</div>}
+      <div style={{ width: "100%", height: 240 }}>
+        <Bubble data={data} options={options} plugins={[ChartDataLabels]} />
+      </div>
+      {unit && (
+        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, textAlign: "center", marginTop: 8, letterSpacing: "0.1em" }}>
+          {unit}
+        </div>
+      )}
     </div>
   );
 }

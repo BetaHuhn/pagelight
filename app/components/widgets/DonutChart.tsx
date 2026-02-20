@@ -9,6 +9,9 @@ const SEG_COLORS = ["#f5a623", "#5ce0d4", "#a78bfa", "#e05c5c", "#6ed96e"];
 export function DonutChart({ segments, centerValue, centerLabel }) {
   const canvasRef = useRef(null);
   const total = segments.reduce((s, sg) => s + sg.value, 0);
+  const labelLength = centerLabel?.length ?? 0;
+  const centerLabelFontSize = labelLength > 36 ? 6 : labelLength > 24 ? 7 : 8;
+  const centerLabelLetterSpacing = labelLength > 24 ? "0.04em" : "0.08em";
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -52,11 +55,33 @@ export function DonutChart({ segments, centerValue, centerLabel }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 36, flexWrap: "wrap" }}>
       <div style={{ position: "relative", flexShrink: 0 }}>
-        <canvas ref={canvasRef} width={180} height={180} style={{ width: 180, height: 180, display: "block" }} />
+        <canvas ref={canvasRef} width={200} height={200} style={{ width: 200, height: 200, display: "block" }} />
         {centerValue && (
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
             <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 30, fontWeight: 900, color: C.white, lineHeight: 1 }}>{centerValue}</span>
-            {centerLabel && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: C.muted, letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 3 }}>{centerLabel}</span>}
+            {centerLabel && (
+              <span
+                title={centerLabel}
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: centerLabelFontSize,
+                  color: C.muted,
+                  letterSpacing: centerLabelLetterSpacing,
+                  textTransform: "uppercase",
+                  marginTop: 7,
+                  maxWidth: 70,
+                  textAlign: "center",
+                  lineHeight: 1.2,
+                  overflow: "hidden",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  wordBreak: "break-word",
+                }}
+              >
+                {centerLabel}
+              </span>
+            )}
           </div>
         )}
       </div>

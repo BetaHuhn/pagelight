@@ -8,7 +8,7 @@ HOW THIS WORKS: You return a JSON object. A React app parses it and renders pre-
 CRITICAL RULES:
 1. Return ONLY valid JSON — start with { and end with }. No markdown fences. No text before or after.
 2. Use ONLY real numbers explicitly stated in the article — NEVER fabricate or estimate data.
-3. Every widget "props" object must be FULLY populated with real values — no nulls for array fields (bars, segments, events, bubbles, items, rows, points). Use the data from the article.
+3. Every widget "props" object must be FULLY populated with real values — no nulls for array fields (bars, segments, events, bubbles, items, rows, points, cells, steps). Use the data from the article.
 4. If the article doesn't have enough data for a widget type, skip it and pick a different type.
 5. "value" fields must be actual numbers, never null.
 6. Choose 4–6 widgets that each illuminate a distinct real statistic from the article.
@@ -113,6 +113,23 @@ Best for: a trend over time with 4–12 data points.
   }
 }
 
+── WIDGET: timeline ──
+Best for: a sequence of 2–12 notable events in chronological order.
+Use "highlight": true for the primary event, otherwise false.
+{
+  "type": "widget",
+  "widgetType": "timeline",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "events": [
+      { "label": "Jan 2023", "title": "Event title", "description": "Short detail", "highlight": true },
+      { "label": "Mar 2023", "title": "Event title", "description": "Short detail", "highlight": false }
+    ],
+    "align": "start" // one of "start" | "end" | "highlighted"
+  }
+}
+
 ── WIDGET: timeline-magnitude ──
 Best for: events or phases over time, where bar height shows magnitude.
 Use "type": "past" for completed events, "current" for the present/key event, "future" for projected.
@@ -208,6 +225,62 @@ Set "highlight" to the name of the entity that is the article's subject.
   }
 }
 
+── WIDGET: slope-chart ──
+Best for: showing before/after (or two comparable snapshots) across 3–10 categories.
+{
+  "type": "widget",
+  "widgetType": "slope-chart",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "leftLabel": "Before",
+    "rightLabel": "After",
+    "unit": "",
+    "items": [
+      { "label": "Category A", "start": 120, "end": 180 },
+      { "label": "Category B", "start": 90,  "end": 70 }
+    ]
+  }
+}
+
+── WIDGET: heatmap ──
+Best for: a complete matrix of values (rows × columns) where intensity indicates magnitude.
+Only use this if the article provides ALL values in the matrix; include a cell for every x/y combination.
+{
+  "type": "widget",
+  "widgetType": "heatmap",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "unit": "",
+    "cells": [
+      { "x": "Q1", "y": "Region A", "value": 12 },
+      { "x": "Q2", "y": "Region A", "value": 18 },
+      { "x": "Q1", "y": "Region B", "value": 7 },
+      { "x": "Q2", "y": "Region B", "value": 10 }
+    ]
+  }
+}
+
+── WIDGET: waterfall-chart ──
+Best for: explaining how a total is built from additive/subtractive components.
+Use signed deltas for intermediate steps. Include one final step with type "total" whose value is the final absolute total.
+{
+  "type": "widget",
+  "widgetType": "waterfall-chart",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "unit": "",
+    "steps": [
+      { "label": "Starting", "value": 1000, "type": "total" },
+      { "label": "Increase", "value": 250,  "type": "delta" },
+      { "label": "Decrease", "value": -120, "type": "delta" },
+      { "label": "Final",    "value": 1130, "type": "total" }
+    ]
+  }
+}
+
 STRUCTURE RULES:
 - Divide the article text into 3–5 prose sections
 - Interleave widgets between sections: prose → widget → prose → widget → prose
@@ -221,6 +294,9 @@ THEME SELECTION:
   political   → elections, policy, governance, law, conflict (crimson accent)
   environment → climate, health, science, sustainability (green accent)
   economy     → demographics, research, statistics, data analysis (violet accent)
+
+Additional metadata:
+- Current date: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
 
 Return ONLY the JSON object. Start with { and end with }. Nothing before or after.`;
 
