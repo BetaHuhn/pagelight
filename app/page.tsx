@@ -29,10 +29,10 @@ const EXAMPLES = [
     url: "https://techcrunch.com/2023/01/17/putting-numbers-on-the-global-venture-slowdown/",
   },
   {
-    title: "2023 Was Officially the Hottest Year on Record",
-    source: "Ars Technica",
-    description: "Global temperatures shattered all records in 2023, reaching 1.48°C above pre-industrial levels",
-    url: "https://arstechnica.com/science/2024/01/2023-was-the-hottest-year-on-record-by-a-massive-margin/",
+    title: "Tracking Global Data on Electric Vehicles",
+    source: "Our World in Data",
+    description: "1 in 5 new cars sold globally in 2023 was electric — Norway leads at 92%, China at 50%, US at 8%",
+    url: "https://ourworldindata.org/electric-car-sales",
   },
   {
     title: "Generative AI Funding Reached New Heights in 2024",
