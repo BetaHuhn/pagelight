@@ -210,13 +210,13 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
                 style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: 11,
-                  color: accentDim,
+                  color: accent,
                   textDecoration: "none",
-                  opacity: 0.7,
+                  opacity: 0.8,
                   transition: "opacity 0.2s",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
               >
                 View original ↗
               </a>
