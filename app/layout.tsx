@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata = {
-  title: "Pagelight",
-  description: "AI-powered article visualization",
+  title: "Pagelight AI",
+  description: "Pagelight AI reads your article, extracts the key data, and renders it as a beautifully designed piece with animated charts woven throughout the text",
 };
 
 type RootLayoutProps = {
