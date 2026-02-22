@@ -21,6 +21,39 @@ const FONT_IMPORT = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap');
 `;
 
+const EXAMPLES = [
+  {
+    title: "Putting Numbers on the Global Venture Slowdown",
+    source: "TechCrunch",
+    description: "Global VC funding fell 35% to $415.1B in 2022, with mega-rounds down 42% after a record 2021",
+    url: "https://techcrunch.com/2023/01/17/putting-numbers-on-the-global-venture-slowdown/",
+  },
+  {
+    title: "2023 Was Officially the Hottest Year on Record",
+    source: "Ars Technica",
+    description: "Global temperatures shattered all records in 2023, reaching 1.48°C above pre-industrial levels",
+    url: "https://arstechnica.com/science/2024/01/2023-was-officially-the-hottest-year-on-record-shattering-previous-marks/",
+  },
+  {
+    title: "Generative AI Funding Reached New Heights in 2024",
+    source: "TechCrunch",
+    description: "Generative AI startups raised $56B globally in 2024, a 92% surge over 2023's $29.1B",
+    url: "https://techcrunch.com/2025/01/03/generative-ai-funding-reached-new-heights-in-2024/",
+  },
+  {
+    title: "Apple Q1 2024: iPad Decline Meets iPhone and Services Records",
+    source: "The Verge",
+    description: "Apple reported $119.6B in revenue with Services hitting an all-time record at $23.1B",
+    url: "https://www.theverge.com/2024/2/1/24058442/apple-q1-2024-earnings-iphone",
+  },
+  {
+    title: "AI Apps Saw Over $1 Billion in Consumer Spending in 2024",
+    source: "TechCrunch",
+    description: "7.7 billion hours spent on AI apps with 17 billion downloads featuring AI across mobile platforms",
+    url: "https://techcrunch.com/2025/01/22/ai-apps-saw-over-1-billion-in-consumer-spending-in-2024/",
+  },
+];
+
 export default function Home() {
   const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -757,6 +790,93 @@ export default function Home() {
                         <div style={{ fontSize: 13, color: C.muted, fontWeight: 300 }}>{sub}</div>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Examples */}
+                  <div style={{ maxWidth: 780, width: "100%", marginTop: 56 }}>
+                    <p
+                      style={{
+                        fontFamily: "'Geist Mono', monospace",
+                        fontSize: 11,
+                        color: C.muted,
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        marginBottom: 16,
+                        textAlign: "center",
+                      }}
+                    >
+                      Try an example
+                    </p>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                        gap: 12,
+                      }}
+                    >
+                      {EXAMPLES.map((ex) => (
+                        <button
+                          key={ex.url}
+                          onClick={() => {
+                            setArticle(ex.url);
+                            if (phase !== "setup") {
+                              textareaRef.current?.focus();
+                            }
+                          }}
+                          style={{
+                            background: C.surface,
+                            border: `1px solid ${C.border}`,
+                            borderRadius: C.borderRadius,
+                            padding: "14px 16px",
+                            textAlign: "left",
+                            cursor: "pointer",
+                            transition: "border-color 0.2s, background 0.2s",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = ACCENT;
+                            e.currentTarget.style.background = C.panel;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = C.border;
+                            e.currentTarget.style.background = C.surface;
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontFamily: "'Geist Mono', monospace",
+                              fontSize: 9,
+                              color: ACCENT,
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              marginBottom: 6,
+                            }}
+                          >
+                            {ex.source}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              color: C.white,
+                              fontWeight: 500,
+                              lineHeight: 1.4,
+                              marginBottom: 6,
+                            }}
+                          >
+                            {ex.title}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 11,
+                              color: C.muted,
+                              fontWeight: 300,
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {ex.description}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
