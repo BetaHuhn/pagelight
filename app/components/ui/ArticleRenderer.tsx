@@ -198,7 +198,22 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
             <span
               style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}
             >
-              Source: {data.source}
+              Source:{" "}
+              {(() => {
+                try {
+                  const url = new URL(data.source);
+                  if (url.protocol === "http:" || url.protocol === "https:") {
+                    return (
+                      <a href={data.source} target="_blank" rel="noopener noreferrer" style={{ color: C.muted, textDecoration: "underline" }}>
+                        {data.source}
+                      </a>
+                    );
+                  }
+                } catch {
+                  // not a URL
+                }
+                return data.source;
+              })()}
             </span>
           )}
         </footer>

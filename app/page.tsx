@@ -194,7 +194,6 @@ export default function Home() {
         addLog("Fetching article from URL…");
         const { text, title: fetchedTitle } = await fetchArticleFromUrl(src.value.trim());
         contentToAnalyze = text;
-        setArticle(text);
         addLog(`Found: ${fetchedTitle ? fetchedTitle : ""}.`);
       } else {
         // Keep the textarea in sync with what will be analyzed.
@@ -425,7 +424,7 @@ export default function Home() {
               {phase !== "generating" && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <Link href="/about">
-                    <Button kind="secondary" onClick={reset}>
+                    <Button kind="secondary">
                       What is this?
                     </Button>
                   </Link>
@@ -535,6 +534,7 @@ export default function Home() {
                       <input
                         value={apiKey}
                         onChange={(e) => setApiKey(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && apiKey) { e.preventDefault(); storeApiKey(apiKey); } }}
                         placeholder={"Paste your Anthropic API key here to get started"}
                         type="password"
                         autoFocus
@@ -621,6 +621,7 @@ export default function Home() {
                         ref={textareaRef}
                         value={article}
                         onChange={(e) => setArticle(e.target.value)}
+                        onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && canGenerate) { e.preventDefault(); generate(); } }}
                         placeholder={
                           "Paste your article text or URL here — news, research, blog post, report… anything with data or narrative structure"
                         }

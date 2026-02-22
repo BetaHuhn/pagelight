@@ -281,6 +281,23 @@ Use signed deltas for intermediate steps. Include one final step with type "tota
   }
 }
 
+── WIDGET: kpi-scorecards ──
+Best for: a dashboard of 2–6 key performance indicators each with a value and optional delta.
+Use "sentiment": "positive" for good trends, "negative" for bad, "neutral" for informational.
+{
+  "type": "widget",
+  "widgetType": "kpi-scorecards",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "items": [
+      { "label": "Revenue", "value": 4200000, "prefix": "$", "unit": "", "delta": 12, "deltaLabel": "vs last quarter", "sentiment": "positive" },
+      { "label": "Headcount", "value": 1800, "unit": "employees", "delta": -8, "deltaLabel": "YoY", "sentiment": "negative" },
+      { "label": "NPS Score", "value": 72, "unit": "", "delta": null, "deltaLabel": null, "sentiment": "neutral" }
+    ]
+  }
+}
+
 STRUCTURE RULES:
 - Divide the article text into 3–5 prose sections
 - Interleave widgets between sections: prose → widget → prose → widget → prose
