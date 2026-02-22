@@ -32,7 +32,7 @@ const EXAMPLES = [
     title: "2023 Was Officially the Hottest Year on Record",
     source: "Ars Technica",
     description: "Global temperatures shattered all records in 2023, reaching 1.48°C above pre-industrial levels",
-    url: "https://arstechnica.com/science/2024/01/2023-was-officially-the-hottest-year-on-record-shattering-previous-marks/",
+    url: "https://arstechnica.com/science/2024/01/2023-was-the-hottest-year-on-record-by-a-massive-margin/",
   },
   {
     title: "Generative AI Funding Reached New Heights in 2024",
