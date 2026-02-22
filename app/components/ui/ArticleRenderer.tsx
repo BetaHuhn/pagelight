@@ -194,13 +194,34 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
               {data.date ? `${data.date}` : ""}
             </span>
           </div>
-          {data.source && (
-            <span
-              style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}
-            >
-              Source: {data.source}
-            </span>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            {data.source && (
+              <span
+                style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}
+              >
+                Source: {data.source}
+              </span>
+            )}
+            {data.sourceUrl && (
+              <a
+                href={data.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: 11,
+                  color: accentDim,
+                  textDecoration: "none",
+                  opacity: 0.7,
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
+              >
+                View original ↗
+              </a>
+            )}
+          </div>
         </footer>
       </div>
     </div>

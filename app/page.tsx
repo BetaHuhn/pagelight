@@ -249,6 +249,9 @@ export default function Home() {
 
       await wait(500);
       const doc = parsed as ArticleDocument;
+      if (src.kind === "url") {
+        doc.sourceUrl = src.value.trim();
+      }
       setArticleData(doc);
 
       const themeKey: ThemeKey = doc.theme;
