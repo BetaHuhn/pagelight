@@ -10,7 +10,14 @@ export type GaugeProps = GaugeDataProps & {
   accentDim?: string;
 };
 
-export function Gauge({ value, min = 0, max = 100, unit = "", lowLabel = "LOW", highLabel = "HIGH" }: GaugeProps) {
+export function Gauge({
+  value,
+  min = 0,
+  max = 100,
+  unit = "",
+  lowLabel = "LOW",
+  highLabel = "HIGH",
+}: GaugeProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pct = (value - min) / (max - min);
 
@@ -29,8 +36,10 @@ export function Gauge({ value, min = 0, max = 100, unit = "", lowLabel = "LOW", 
       const elapsed = ts - startTs;
       const p = ease(elapsed / DURATION);
       const sway = p >= 1 ? Math.sin(elapsed / 1100) * 0.022 : 0;
-      const W = canvas.width, H = canvas.height;
-      const cx = W / 2, cy = H * 0.72;
+      const W = canvas.width,
+        H = canvas.height;
+      const cx = W / 2,
+        cy = H * 0.72;
       const r = W * 0.37;
       ctx.clearRect(0, 0, W, H);
 
@@ -80,11 +89,38 @@ export function Gauge({ value, min = 0, max = 100, unit = "", lowLabel = "LOW", 
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <canvas ref={canvasRef} width={280} height={160} style={{ width: "100%", maxWidth: 280, height: "auto", display: "block" }} />
+      <canvas
+        ref={canvasRef}
+        width={280}
+        height={160}
+        style={{ width: "100%", maxWidth: 280, height: "auto", display: "block" }}
+      />
       <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 38, fontWeight: 900, color: C.white, lineHeight: 1 }}>{value}{unit}</div>
-          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: C.muted, letterSpacing: "0.1em", marginTop: 2 }}>out of {max}{unit}</div>
+          <div
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 38,
+              fontWeight: 900,
+              color: C.white,
+              lineHeight: 1,
+            }}
+          >
+            {value}
+            {unit}
+          </div>
+          <div
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: 9,
+              color: C.muted,
+              letterSpacing: "0.1em",
+              marginTop: 2,
+            }}
+          >
+            out of {max}
+            {unit}
+          </div>
         </div>
       </div>
     </div>

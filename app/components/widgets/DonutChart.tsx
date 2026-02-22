@@ -32,9 +32,12 @@ export function DonutChart({ segments, centerValue, centerLabel }: DonutChartPro
       if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
-      const W = canvas.width, H = canvas.height;
-      const cx = W / 2, cy = H / 2;
-      const r = Math.min(W, H) * 0.42, ir = r * 0.58;
+      const W = canvas.width,
+        H = canvas.height;
+      const cx = W / 2,
+        cy = H / 2;
+      const r = Math.min(W, H) * 0.42,
+        ir = r * 0.58;
       ctx.clearRect(0, 0, W, H);
 
       let angle = -Math.PI / 2;
@@ -64,10 +67,35 @@ export function DonutChart({ segments, centerValue, centerLabel }: DonutChartPro
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 36, flexWrap: "wrap" }}>
       <div style={{ position: "relative", flexShrink: 0 }}>
-        <canvas ref={canvasRef} width={200} height={200} style={{ width: 200, height: 200, display: "block" }} />
+        <canvas
+          ref={canvasRef}
+          width={200}
+          height={200}
+          style={{ width: 200, height: 200, display: "block" }}
+        />
         {centerValue && (
-          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 30, fontWeight: 900, color: C.white, lineHeight: 1 }}>{centerValue}</span>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 30,
+                fontWeight: 900,
+                color: C.white,
+                lineHeight: 1,
+              }}
+            >
+              {centerValue}
+            </span>
             {centerLabel && (
               <span
                 title={centerLabel}
@@ -97,9 +125,30 @@ export function DonutChart({ segments, centerValue, centerLabel }: DonutChartPro
       <div style={{ flex: 1, minWidth: 160, display: "flex", flexDirection: "column", gap: 12 }}>
         {segments.map((seg, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 10, height: 10, borderRadius: 2, background: SEG_COLORS[i % SEG_COLORS.length], flexShrink: 0 }} />
-            <span style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.body, flex: 1 }}>{seg.label}</span>
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: C.muted }}>{((seg.value / total) * 100).toFixed(1)}%</span>
+            <div
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: 2,
+                background: SEG_COLORS[i % SEG_COLORS.length],
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "'IBM Plex Sans', sans-serif",
+                fontSize: 13,
+                color: C.body,
+                flex: 1,
+              }}
+            >
+              {seg.label}
+            </span>
+            <span
+              style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: C.muted }}
+            >
+              {((seg.value / total) * 100).toFixed(1)}%
+            </span>
           </div>
         ))}
       </div>

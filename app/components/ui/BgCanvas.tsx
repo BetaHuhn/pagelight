@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export function BgCanvas({ opacity = 0.10 }: { opacity?: number }) {
+export function BgCanvas({ opacity = 0.1 }: { opacity?: number }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
     const c = ref.current;
@@ -144,8 +144,14 @@ export function BgCanvas({ opacity = 0.10 }: { opacity?: number }) {
       const speed = Math.hypot(state.mouseVX, state.mouseVY);
       const speedNorm = Math.min(1, speed / 2200);
 
-      const clampedVX = Math.max(-maxVelocityForOffset, Math.min(maxVelocityForOffset, state.mouseVX));
-      const clampedVY = Math.max(-maxVelocityForOffset, Math.min(maxVelocityForOffset, state.mouseVY));
+      const clampedVX = Math.max(
+        -maxVelocityForOffset,
+        Math.min(maxVelocityForOffset, state.mouseVX)
+      );
+      const clampedVY = Math.max(
+        -maxVelocityForOffset,
+        Math.min(maxVelocityForOffset, state.mouseVY)
+      );
 
       const clampedSpeed = Math.hypot(clampedVX, clampedVY);
       let targetFlowX = 0;
@@ -203,5 +209,17 @@ export function BgCanvas({ opacity = 0.10 }: { opacity?: number }) {
     };
   }, [opacity]);
 
-  return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} />;
+  return (
+    <canvas
+      ref={ref}
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}
+    />
+  );
 }

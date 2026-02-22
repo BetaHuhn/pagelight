@@ -79,7 +79,11 @@ export function WaterfallChart({ steps, unit = "", accent, accentDim }: Waterfal
       for (let i = 0; i <= 4; i++) {
         const v = min + ((max - min) * i) / 4;
         const y = toY(v, h, pad);
-        ctx.fillText(`${Math.round(v).toLocaleString()}${unit ? ` ${unit}` : ""}`, pad.l - 6, y + 3);
+        ctx.fillText(
+          `${Math.round(v).toLocaleString()}${unit ? ` ${unit}` : ""}`,
+          pad.l - 6,
+          y + 3
+        );
         ctx.strokeStyle = C.border + "38";
         ctx.lineWidth = 0.6;
         ctx.beginPath();
@@ -126,7 +130,11 @@ export function WaterfallChart({ steps, unit = "", accent, accentDim }: Waterfal
 
         const delta = step.type === "total" ? step.end : step.end - step.start;
         ctx.fillStyle = isTotal ? accent : delta >= 0 ? accent : C.red;
-        ctx.fillText(`${delta >= 0 && !isTotal ? "+" : ""}${Math.round(delta).toLocaleString()}`, x + barW / 2, yTop - 6);
+        ctx.fillText(
+          `${delta >= 0 && !isTotal ? "+" : ""}${Math.round(delta).toLocaleString()}`,
+          x + barW / 2,
+          yTop - 6
+        );
       });
 
       if (p < 1) raf = requestAnimationFrame(draw);

@@ -11,7 +11,7 @@ export type BarChartProps = BarChartDataProps & {
 };
 
 export function BarChart({ bars, unit, accent, accentDim }: BarChartProps) {
-  const maxVal = Math.max(...bars.map(b => b.value));
+  const maxVal = Math.max(...bars.map((b) => b.value));
   const barRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function BarChart({ bars, unit, accent, accentDim }: BarChartProps) {
       const p = ease((ts - startTs) / DURATION);
       bars.forEach((bar, i) => {
         const el = barRefs.current[i];
-        if (el) el.style.width = ((bar.value / maxVal) * p * 100) + "%";
+        if (el) el.style.width = (bar.value / maxVal) * p * 100 + "%";
       });
       if (p < 1) raf = requestAnimationFrame(draw);
     }
@@ -36,15 +36,40 @@ export function BarChart({ bars, unit, accent, accentDim }: BarChartProps) {
       {bars.map((bar, i) => (
         <div key={i}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 7 }}>
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: bar.highlight ? accent : C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>{bar.label}</span>
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: bar.highlight ? accent : C.muted }}>
-              {bar.value.toLocaleString()}{unit ? ` ${unit}` : ""}
+            <span
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: 11,
+                color: bar.highlight ? accent : C.muted,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
+            >
+              {bar.label}
+            </span>
+            <span
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: 11,
+                color: bar.highlight ? accent : C.muted,
+              }}
+            >
+              {bar.value.toLocaleString()}
+              {unit ? ` ${unit}` : ""}
             </span>
           </div>
           <div style={{ height: 6, background: C.border, borderRadius: 1, overflow: "hidden" }}>
             <div
-              ref={(el: HTMLDivElement | null) => { barRefs.current[i] = el; }}
-              style={{ height: "100%", width: "0%", background: bar.highlight ? accent : accentDim, borderRadius: 1, boxShadow: bar.highlight ? `0 0 10px ${accent}50` : "none" }}
+              ref={(el: HTMLDivElement | null) => {
+                barRefs.current[i] = el;
+              }}
+              style={{
+                height: "100%",
+                width: "0%",
+                background: bar.highlight ? accent : accentDim,
+                borderRadius: 1,
+                boxShadow: bar.highlight ? `0 0 10px ${accent}50` : "none",
+              }}
             />
           </div>
         </div>

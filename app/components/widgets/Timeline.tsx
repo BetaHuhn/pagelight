@@ -77,12 +77,12 @@ export function Timeline({ events, align, accent, accentDim }: TimelineProps) {
     if (!el) return;
     let targetIndex = 0;
     if (align === "highlighted") {
-      const highlightedIndex = events.findIndex(e => e.highlight || e.current);
+      const highlightedIndex = events.findIndex((e) => e.highlight || e.current);
       targetIndex = highlightedIndex !== -1 ? highlightedIndex : 0;
     } else if (align === "end") {
       targetIndex = events.length - 1;
     } else {
-      targetIndex = 0
+      targetIndex = 0;
     }
     const inner = el.firstElementChild as HTMLElement | null;
     const targetEl = inner?.children?.[targetIndex] as HTMLElement | undefined;
@@ -94,7 +94,14 @@ export function Timeline({ events, align, accent, accentDim }: TimelineProps) {
 
   return (
     <div>
-      <div style={{ marginTop: 10, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted }}></div>
+      <div
+        style={{
+          marginTop: 10,
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: 10,
+          color: C.muted,
+        }}
+      ></div>
       <div style={{ position: "relative" }}>
         <div
           style={{
@@ -123,7 +130,10 @@ export function Timeline({ events, align, accent, accentDim }: TimelineProps) {
             {events.map((ev, i) => {
               const highlight = Boolean(ev.highlight || ev.current);
               return (
-                <div key={i} style={{ flex: "0 0 220px", position: "relative", paddingTop: cardOffset }}>
+                <div
+                  key={i}
+                  style={{ flex: "0 0 220px", position: "relative", paddingTop: cardOffset }}
+                >
                   {ev.label && (
                     <div
                       style={{
@@ -163,12 +173,29 @@ export function Timeline({ events, align, accent, accentDim }: TimelineProps) {
                     }}
                   >
                     {ev.title && (
-                      <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.text, marginTop: 6, fontWeight: 600, lineHeight: 1.4 }}>
+                      <div
+                        style={{
+                          fontFamily: "'IBM Plex Sans', sans-serif",
+                          fontSize: 13,
+                          color: C.text,
+                          marginTop: 6,
+                          fontWeight: 600,
+                          lineHeight: 1.4,
+                        }}
+                      >
                         {ev.title}
                       </div>
                     )}
                     {ev.description && (
-                      <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 12, color: C.body, marginTop: 6, lineHeight: 1.6 }}>
+                      <div
+                        style={{
+                          fontFamily: "'IBM Plex Sans', sans-serif",
+                          fontSize: 12,
+                          color: C.body,
+                          marginTop: 6,
+                          lineHeight: 1.6,
+                        }}
+                      >
                         {ev.description}
                       </div>
                     )}
@@ -179,15 +206,50 @@ export function Timeline({ events, align, accent, accentDim }: TimelineProps) {
           </div>
         </div>
         {canLeft && (
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 26, background: `linear-gradient(90deg, ${C.surface}, transparent)` }} />
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: 26,
+              background: `linear-gradient(90deg, ${C.surface}, transparent)`,
+            }}
+          />
         )}
         {canRight && (
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 26, background: `linear-gradient(270deg, ${C.surface}, transparent)` }} />
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: 26,
+              background: `linear-gradient(270deg, ${C.surface}, transparent)`,
+            }}
+          />
         )}
       </div>
 
-      <div style={{ marginTop: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, letterSpacing: "0.12em", textTransform: "uppercase" }}>Drag or use arrows to explore the timeline</div>
+      <div
+        style={{
+          marginTop: 10,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            color: C.muted,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+          }}
+        >
+          Drag or use arrows to explore the timeline
+        </div>
         <div style={{ display: "flex", gap: 6 }}>
           <button
             type="button"

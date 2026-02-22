@@ -83,20 +83,57 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
       break;
     default:
       chart = (
-        <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "12px 0" }}>
+        <div
+          style={{
+            color: C.muted,
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 12,
+            padding: "12px 0",
+          }}
+        >
           Unknown widget type: {(section as any).widgetType}
         </div>
       );
   }
 
   return (
-    <div data-widget-type={section.widgetType} style={{ margin: "40px 0", background: C.surfaceGradient, border: `1px solid ${C.border}`, borderRadius: C.borderRadius, padding: 28, animation: "fadeUp 0.5s ease both" }}>
+    <div
+      data-widget-type={section.widgetType}
+      style={{
+        margin: "40px 0",
+        background: C.surfaceGradient,
+        border: `1px solid ${C.border}`,
+        borderRadius: C.borderRadius,
+        padding: 28,
+        animation: "fadeUp 0.5s ease both",
+      }}
+    >
       {label && <WidgetLabel text={label} accent={accent} accentDim={accentDim} />}
       {chart}
       {insight && (
-        <div style={{ marginTop: 22, padding: "12px 16px", background: accent + "0d", border: `1px solid ${accentDim}`, borderRadius: C.borderRadius - 5, display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            marginTop: 22,
+            padding: "12px 16px",
+            background: accent + "0d",
+            border: `1px solid ${accentDim}`,
+            borderRadius: C.borderRadius - 5,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
           <IconArrowRight size={13} style={{ color: accent }} />
-          <p style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.body, margin: 0 }}>{insight}</p>
+          <p
+            style={{
+              fontFamily: "'IBM Plex Sans', sans-serif",
+              fontSize: 13,
+              color: C.body,
+              margin: 0,
+            }}
+          >
+            {insight}
+          </p>
         </div>
       )}
     </div>

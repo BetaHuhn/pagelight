@@ -1,45 +1,45 @@
 import type { CSSProperties } from "react";
 
 export default function GlowText({
-    text,
-    direction = "right",
-    color,
-    pauseMs = 0,
-    strength = 1,
+  text,
+  direction = "right",
+  color,
+  pauseMs = 0,
+  strength = 1,
 }: {
-    text: string;
-    direction?: "left" | "right";
-    color: string;
-    pauseMs?: number;
-    strength?: number;
+  text: string;
+  direction?: "left" | "right";
+  color: string;
+  pauseMs?: number;
+  strength?: number;
 }) {
-    const fromX = direction === "left" ? "-100%" : "100%";
-    const toX = direction === "left" ? "100%" : "-100%";
+  const fromX = direction === "left" ? "-100%" : "100%";
+  const toX = direction === "left" ? "100%" : "-100%";
 
-    const safeStrength = Number.isFinite(strength) ? Math.min(1, Math.max(0, strength)) : 1;
-    const bandAlpha = 0.9 * safeStrength;
+  const safeStrength = Number.isFinite(strength) ? Math.min(1, Math.max(0, strength)) : 1;
+  const bandAlpha = 0.9 * safeStrength;
 
-    const sweepMs = 3400;
-    const safePauseMs = Number.isFinite(pauseMs) ? Math.max(0, pauseMs) : 0;
-    const totalMs = sweepMs + safePauseMs;
+  const sweepMs = 3400;
+  const safePauseMs = Number.isFinite(pauseMs) ? Math.max(0, pauseMs) : 0;
+  const totalMs = sweepMs + safePauseMs;
 
-    const sweepPct = safePauseMs > 0 ? (sweepMs / totalMs) * 100 : 100;
-    const fadeInPct = sweepPct * 0.16;
-    const holdPct = sweepPct * 0.7;
+  const sweepPct = safePauseMs > 0 ? (sweepMs / totalMs) * 100 : 100;
+  const fadeInPct = sweepPct * 0.16;
+  const holdPct = sweepPct * 0.7;
 
-    const pct = (n: number) => `${Math.min(100, Math.max(0, n)).toFixed(3)}%`;
+  const pct = (n: number) => `${Math.min(100, Math.max(0, n)).toFixed(3)}%`;
 
-    const styleVars = {
-        "--glow-color": color,
-        "--glow-opacity": String(safeStrength),
-        "--glow-band-alpha": String(bandAlpha),
-        "--from-x": fromX,
-        "--to-x": toX,
-    } as CSSProperties;
+  const styleVars = {
+    "--glow-color": color,
+    "--glow-opacity": String(safeStrength),
+    "--glow-band-alpha": String(bandAlpha),
+    "--from-x": fromX,
+    "--to-x": toX,
+  } as CSSProperties;
 
-    return (
-        <>
-            <style>{`
+  return (
+    <>
+      <style>{`
                 .glowText { position: relative; display: inline-block; }
                 .glowText::after {
                     content: attr(data-text);
@@ -71,7 +71,9 @@ export default function GlowText({
                     100% { background-position: var(--to-x) 50%; opacity: 0; }
                 }
             `}</style>
-            <span className="glowText" data-text={text} style={styleVars}>{text}</span>
-        </>
-    );
+      <span className="glowText" data-text={text} style={styleVars}>
+        {text}
+      </span>
+    </>
+  );
 }

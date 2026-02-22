@@ -38,7 +38,8 @@ type DataLabelsContextLike = {
 
 function getBubblePoint(ctx: DataLabelsContextLike): BubblePoint | null {
   const idx = typeof ctx.dataIndex === "number" ? ctx.dataIndex : -1;
-  const fromDataset = Array.isArray(ctx.dataset?.data) && idx >= 0 ? ctx.dataset?.data[idx] : undefined;
+  const fromDataset =
+    Array.isArray(ctx.dataset?.data) && idx >= 0 ? ctx.dataset?.data[idx] : undefined;
   const raw = (fromDataset ?? ctx.raw) as unknown;
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Partial<BubblePoint>;
@@ -91,7 +92,9 @@ export function BubbleChart({ bubbles, unit, accent, accentDim }: BubbleChartPro
       datasets: [
         {
           data: points,
-          backgroundColor: points.map((p) => (p.value === maxVal ? `${accent}2a` : `${accentDim}55`)),
+          backgroundColor: points.map((p) =>
+            p.value === maxVal ? `${accent}2a` : `${accentDim}55`
+          ),
           borderColor: points.map((p) => (p.value === maxVal ? accent : accentDim)),
           borderWidth: points.map((p) => (p.value === maxVal ? 1.6 : 1)),
           hoverBorderColor: accent,
@@ -161,7 +164,14 @@ export function BubbleChart({ bubbles, unit, accent, accentDim }: BubbleChartPro
 
   if (!data || !options) {
     return (
-      <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "6px 0" }}>
+      <div
+        style={{
+          color: C.muted,
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: 12,
+          padding: "6px 0",
+        }}
+      >
         No data for bubble chart.
       </div>
     );
@@ -173,7 +183,16 @@ export function BubbleChart({ bubbles, unit, accent, accentDim }: BubbleChartPro
         <Bubble data={data} options={options} plugins={[ChartDataLabels]} />
       </div>
       {unit && (
-        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, textAlign: "center", marginTop: 8, letterSpacing: "0.1em" }}>
+        <div
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            color: C.muted,
+            textAlign: "center",
+            marginTop: 8,
+            letterSpacing: "0.1em",
+          }}
+        >
           {unit}
         </div>
       )}

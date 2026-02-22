@@ -9,7 +9,13 @@ export type SlopeChartProps = SlopeChartDataProps & {
   accent: string;
 };
 
-export function SlopeChart({ items, unit = "", leftLabel = "Before", rightLabel = "After", accent }: SlopeChartProps) {
+export function SlopeChart({
+  items,
+  unit = "",
+  leftLabel = "Before",
+  rightLabel = "After",
+  accent,
+}: SlopeChartProps) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -30,7 +36,14 @@ export function SlopeChart({ items, unit = "", leftLabel = "Before", rightLabel 
 
   if (!items?.length) {
     return (
-      <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "6px 0" }}>
+      <div
+        style={{
+          color: C.muted,
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: 12,
+          padding: "6px 0",
+        }}
+      >
         No data for slope chart.
       </div>
     );
@@ -54,13 +67,50 @@ export function SlopeChart({ items, unit = "", leftLabel = "Before", rightLabel 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, letterSpacing: "0.08em", textTransform: "uppercase" }}>{leftLabel}</span>
-        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, letterSpacing: "0.08em", textTransform: "uppercase" }}>{rightLabel}</span>
+        <span
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            color: C.muted,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}
+        >
+          {leftLabel}
+        </span>
+        <span
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            color: C.muted,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}
+        >
+          {rightLabel}
+        </span>
       </div>
 
-      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: "100%", height: "auto", display: "block" }}>
-        <line x1={xLeft} y1={top - 18} x2={xLeft} y2={height - 28} stroke={C.border} strokeWidth="1" />
-        <line x1={xRight} y1={top - 18} x2={xRight} y2={height - 28} stroke={C.border} strokeWidth="1" />
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        style={{ width: "100%", height: "auto", display: "block" }}
+      >
+        <line
+          x1={xLeft}
+          y1={top - 18}
+          x2={xLeft}
+          y2={height - 28}
+          stroke={C.border}
+          strokeWidth="1"
+        />
+        <line
+          x1={xRight}
+          y1={top - 18}
+          x2={xRight}
+          y2={height - 28}
+          stroke={C.border}
+          strokeWidth="1"
+        />
 
         {items.map((item, i) => {
           const y1 = toY(item.start);
@@ -72,14 +122,54 @@ export function SlopeChart({ items, unit = "", leftLabel = "Before", rightLabel 
 
           return (
             <g key={i}>
-              <line x1={xLeft} y1={y1} x2={xRight} y2={y2} stroke={color} strokeWidth="2" strokeOpacity="0.85" />
+              <line
+                x1={xLeft}
+                y1={y1}
+                x2={xRight}
+                y2={y2}
+                stroke={color}
+                strokeWidth="2"
+                strokeOpacity="0.85"
+              />
               <circle cx={xLeft} cy={y1} r="4" fill={C.surface} stroke={color} strokeWidth="2" />
               <circle cx={xRight} cy={y2} r="4" fill={C.surface} stroke={color} strokeWidth="2" />
 
-              <text x={22} y={rowY + 4} fill={C.body} fontFamily="'IBM Plex Sans', sans-serif" fontSize="13">{item.label}</text>
-              <text x={xLeft - 10} y={y1 + 4} textAnchor="end" fill={C.muted} fontFamily="'IBM Plex Mono', monospace" fontSize="10">{format(item.start)}</text>
-              <text x={xRight + 10} y={fullY2 + 4} fill={color} fontFamily="'IBM Plex Mono', monospace" fontSize="10">{format(item.end)}</text>
-              <text x={xRight + 118} y={fullY2 + 4} textAnchor="end" fill={color} fontFamily="'IBM Plex Mono', monospace" fontSize="10">
+              <text
+                x={22}
+                y={rowY + 4}
+                fill={C.body}
+                fontFamily="'IBM Plex Sans', sans-serif"
+                fontSize="13"
+              >
+                {item.label}
+              </text>
+              <text
+                x={xLeft - 10}
+                y={y1 + 4}
+                textAnchor="end"
+                fill={C.muted}
+                fontFamily="'IBM Plex Mono', monospace"
+                fontSize="10"
+              >
+                {format(item.start)}
+              </text>
+              <text
+                x={xRight + 10}
+                y={fullY2 + 4}
+                fill={color}
+                fontFamily="'IBM Plex Mono', monospace"
+                fontSize="10"
+              >
+                {format(item.end)}
+              </text>
+              <text
+                x={xRight + 118}
+                y={fullY2 + 4}
+                textAnchor="end"
+                fill={color}
+                fontFamily="'IBM Plex Mono', monospace"
+                fontSize="10"
+              >
                 {delta > 0 ? "+" : ""}
                 {delta.toLocaleString()}
               </text>

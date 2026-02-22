@@ -35,7 +35,14 @@ export function Heatmap({ cells, unit = "", accent }: HeatmapProps) {
 
   if (!cells?.length) {
     return (
-      <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "6px 0" }}>
+      <div
+        style={{
+          color: C.muted,
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: 12,
+          padding: "6px 0",
+        }}
+      >
         No data for heatmap.
       </div>
     );
@@ -65,14 +72,31 @@ export function Heatmap({ cells, unit = "", accent }: HeatmapProps) {
         >
           <div />
           {xLabels.map((label, i) => (
-            <div key={i} style={{ textAlign: "center", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <div
+              key={i}
+              style={{
+                textAlign: "center",
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: 10,
+                color: C.muted,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
+            >
               {label}
             </div>
           ))}
 
           {yLabels.map((rowLabel, rowIndex) => (
             <div key={rowLabel} style={{ display: "contents" }}>
-              <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.body, paddingRight: 8 }}>
+              <div
+                style={{
+                  fontFamily: "'IBM Plex Sans', sans-serif",
+                  fontSize: 13,
+                  color: C.body,
+                  paddingRight: 8,
+                }}
+              >
                 {rowLabel}
               </div>
               {xLabels.map((colLabel, colIndex) => {
@@ -102,10 +126,30 @@ export function Heatmap({ cells, unit = "", accent }: HeatmapProps) {
       </div>
 
       <div style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted }}>Low</span>
-        <div style={{ flex: 1, maxWidth: 220, height: 8, borderRadius: 4, background: `linear-gradient(90deg, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12), rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.94))`, border: `1px solid ${C.border}` }} />
-        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted }}>High</span>
-        <span style={{ marginLeft: 8, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted }}>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted }}>
+          Low
+        </span>
+        <div
+          style={{
+            flex: 1,
+            maxWidth: 220,
+            height: 8,
+            borderRadius: 4,
+            background: `linear-gradient(90deg, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12), rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.94))`,
+            border: `1px solid ${C.border}`,
+          }}
+        />
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted }}>
+          High
+        </span>
+        <span
+          style={{
+            marginLeft: 8,
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            color: C.muted,
+          }}
+        >
           {min.toLocaleString()} → {max.toLocaleString()}
           {unit ? ` ${unit}` : ""}
         </span>

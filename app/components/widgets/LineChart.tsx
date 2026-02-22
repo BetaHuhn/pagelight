@@ -33,11 +33,14 @@ export function LineChart({ points, yLabel, unit = "", accent }: LineChartProps)
       if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
-      const W = canvas.width, H = canvas.height;
+      const W = canvas.width,
+        H = canvas.height;
       const PAD = { t: 20, r: 16, b: 36, l: 52 };
-      const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
-      const vals = points.map(pt => pt.y);
-      const minY = Math.min(...vals), maxY = Math.max(...vals);
+      const cW = W - PAD.l - PAD.r,
+        cH = H - PAD.t - PAD.b;
+      const vals = points.map((pt) => pt.y);
+      const minY = Math.min(...vals),
+        maxY = Math.max(...vals);
       const range = maxY - minY || 1;
       const toX = (i: number) => PAD.l + (i / (points.length - 1)) * cW;
       const toY = (v: number) => PAD.t + cH - ((v - minY) / range) * cH;
@@ -82,7 +85,9 @@ export function LineChart({ points, yLabel, unit = "", accent }: LineChartProps)
       grad.addColorStop(0, accent + "26");
       grad.addColorStop(1, accent + "00");
       ctx.beginPath();
-      points.forEach((pt, i) => { i === 0 ? ctx.moveTo(toX(i), toY(pt.y)) : ctx.lineTo(toX(i), toY(pt.y)); });
+      points.forEach((pt, i) => {
+        i === 0 ? ctx.moveTo(toX(i), toY(pt.y)) : ctx.lineTo(toX(i), toY(pt.y));
+      });
       ctx.lineTo(toX(points.length - 1), PAD.t + cH);
       ctx.lineTo(toX(0), PAD.t + cH);
       ctx.closePath();
@@ -90,7 +95,9 @@ export function LineChart({ points, yLabel, unit = "", accent }: LineChartProps)
       ctx.fill();
 
       ctx.beginPath();
-      points.forEach((pt, i) => { i === 0 ? ctx.moveTo(toX(i), toY(pt.y)) : ctx.lineTo(toX(i), toY(pt.y)); });
+      points.forEach((pt, i) => {
+        i === 0 ? ctx.moveTo(toX(i), toY(pt.y)) : ctx.lineTo(toX(i), toY(pt.y));
+      });
       ctx.strokeStyle = accent;
       ctx.lineWidth = 2;
       ctx.lineJoin = "round";
@@ -117,7 +124,20 @@ export function LineChart({ points, yLabel, unit = "", accent }: LineChartProps)
 
   return (
     <div>
-      {yLabel && <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>{yLabel}</div>}
+      {yLabel && (
+        <div
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            color: C.muted,
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            marginBottom: 8,
+          }}
+        >
+          {yLabel}
+        </div>
+      )}
       <canvas ref={canvasRef} style={{ width: "100%", height: 220, display: "block" }} />
     </div>
   );

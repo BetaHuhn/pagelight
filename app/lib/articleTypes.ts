@@ -210,22 +210,118 @@ export type WidgetType =
   | "kpi-scorecards";
 
 export type WidgetSection =
-  | { type: "widget"; widgetType: "wave-counter"; label: string; insight: string | null; props: WaveCounterProps }
-  | { type: "widget"; widgetType: "bar-chart"; label: string; insight: string | null; props: BarChartProps }
-  | { type: "widget"; widgetType: "donut-chart"; label: string; insight: string | null; props: DonutChartProps }
-  | { type: "widget"; widgetType: "gauge"; label: string; insight: string | null; props: GaugeProps }
-  | { type: "widget"; widgetType: "line-chart"; label: string; insight: string | null; props: LineChartProps }
-  | { type: "widget"; widgetType: "timeline"; label: string; insight: string | null; props: TimelineProps }
-  | { type: "widget"; widgetType: "timeline-magnitude"; label: string; insight: string | null; props: TimelineMagnitudeProps }
-  | { type: "widget"; widgetType: "unit-chart"; label: string; insight: string | null; props: UnitChartProps }
-  | { type: "widget"; widgetType: "stat-comparison"; label: string; insight: string | null; props: StatComparisonProps }
-  | { type: "widget"; widgetType: "bubble-chart"; label: string; insight: string | null; props: BubbleChartProps }
-  | { type: "widget"; widgetType: "progress-bars"; label: string; insight: string | null; props: ProgressBarsProps }
-  | { type: "widget"; widgetType: "comparison-table"; label: string; insight: string | null; props: ComparisonTableProps }
-  | { type: "widget"; widgetType: "slope-chart"; label: string; insight: string | null; props: SlopeChartProps }
-  | { type: "widget"; widgetType: "heatmap"; label: string; insight: string | null; props: HeatmapProps }
-  | { type: "widget"; widgetType: "waterfall-chart"; label: string; insight: string | null; props: WaterfallChartProps }
-  | { type: "widget"; widgetType: "kpi-scorecards"; label: string; insight: string | null; props: KpiScorecardsProps };
+  | {
+      type: "widget";
+      widgetType: "wave-counter";
+      label: string;
+      insight: string | null;
+      props: WaveCounterProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "bar-chart";
+      label: string;
+      insight: string | null;
+      props: BarChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "donut-chart";
+      label: string;
+      insight: string | null;
+      props: DonutChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "gauge";
+      label: string;
+      insight: string | null;
+      props: GaugeProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "line-chart";
+      label: string;
+      insight: string | null;
+      props: LineChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "timeline";
+      label: string;
+      insight: string | null;
+      props: TimelineProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "timeline-magnitude";
+      label: string;
+      insight: string | null;
+      props: TimelineMagnitudeProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "unit-chart";
+      label: string;
+      insight: string | null;
+      props: UnitChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "stat-comparison";
+      label: string;
+      insight: string | null;
+      props: StatComparisonProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "bubble-chart";
+      label: string;
+      insight: string | null;
+      props: BubbleChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "progress-bars";
+      label: string;
+      insight: string | null;
+      props: ProgressBarsProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "comparison-table";
+      label: string;
+      insight: string | null;
+      props: ComparisonTableProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "slope-chart";
+      label: string;
+      insight: string | null;
+      props: SlopeChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "heatmap";
+      label: string;
+      insight: string | null;
+      props: HeatmapProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "waterfall-chart";
+      label: string;
+      insight: string | null;
+      props: WaterfallChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "kpi-scorecards";
+      label: string;
+      insight: string | null;
+      props: KpiScorecardsProps;
+    };
 
 export type ArticleSection = ProseSection | WidgetSection;
 

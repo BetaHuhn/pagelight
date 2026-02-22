@@ -19,8 +19,8 @@ function isPrivateIp(ip: string): boolean {
     );
   }
 
-  const parts = ip.split(".").map(n => Number(n));
-  if (parts.length !== 4 || parts.some(n => Number.isNaN(n) || n < 0 || n > 255)) return true;
+  const parts = ip.split(".").map((n) => Number(n));
+  if (parts.length !== 4 || parts.some((n) => Number.isNaN(n) || n < 0 || n > 255)) return true;
   const [a, b] = parts;
 
   return (
@@ -71,7 +71,7 @@ function fallbackExtract(doc: Document): { title: string | null; text: string } 
     "textarea",
   ];
   for (const sel of selectorsToRemove) {
-    doc.querySelectorAll(sel).forEach(el => el.remove());
+    doc.querySelectorAll(sel).forEach((el) => el.remove());
   }
 
   const root =
@@ -112,7 +112,9 @@ async function readResponseTextWithLimit(res: Response, maxBytes: number): Promi
   return new TextDecoder("utf-8", { fatal: false }).decode(merged);
 }
 
-async function fetchHtml(url: string): Promise<{ html: string; finalUrl: string; contentType: string }> {
+async function fetchHtml(
+  url: string
+): Promise<{ html: string; finalUrl: string; contentType: string }> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
@@ -143,7 +145,10 @@ async function fetchHtml(url: string): Promise<{ html: string; finalUrl: string;
   }
 }
 
-function extractArticle(html: string, baseUrl: string): {
+function extractArticle(
+  html: string,
+  baseUrl: string
+): {
   title: string | null;
   byline: string | null;
   excerpt: string | null;
@@ -171,7 +176,9 @@ function extractArticle(html: string, baseUrl: string): {
   return { title: fallback.title, byline: null, excerpt: null, text: fallback.text };
 }
 
-function parseAndValidateUrl(input: unknown): { ok: true; url: URL } | { ok: false; error: string } {
+function parseAndValidateUrl(
+  input: unknown
+): { ok: true; url: URL } | { ok: false; error: string } {
   if (typeof input !== "string" || !input.trim()) return { ok: false, error: "URL is required." };
 
   let url: URL;
@@ -194,14 +201,18 @@ function parseAndValidateUrl(input: unknown): { ok: true; url: URL } | { ok: fal
 
 async function handle(inputUrl: unknown) {
   const parsedUrl = parseAndValidateUrl(inputUrl);
-  if (!parsedUrl.ok) return NextResponse.json({ ok: false, error: parsedUrl.error }, { status: 400 });
+  if (!parsedUrl.ok)
+    return NextResponse.json({ ok: false, error: parsedUrl.error }, { status: 400 });
 
   const { html, finalUrl } = await fetchHtml(parsedUrl.url.toString());
   const extracted = extractArticle(html, finalUrl);
   const wordCount = extracted.text.split(/\s+/).filter(Boolean).length;
 
   if (!extracted.text) {
-    return NextResponse.json({ ok: false, error: "No readable text found on the page." }, { status: 422 });
+    return NextResponse.json(
+      { ok: false, error: "No readable text found on the page." },
+      { status: 422 }
+    );
   }
 
   return NextResponse.json({
