@@ -660,7 +660,7 @@ export default function Home() {
                           background: C.panel,
                         }}
                       >
-                        <div style={{ paddingLeft: 12 }}>
+                        <div style={{ paddingLeft: isMobile ? 0 : 12, textAlign: isMobile ? "center" : "left" }}>
                           {phase === "error" && (
                             <div
                               style={{
