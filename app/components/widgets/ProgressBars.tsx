@@ -19,6 +19,7 @@ export function ProgressBars({ items, accent }: ProgressBarsProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {items.map(({ label, sub, value, sentiment }, i) => {
+        const safeValue = Math.min(100, Math.max(0, Number.isFinite(Number(value)) ? Number(value) : 0));
         const color =
           sentiment === "negative" ? C.red : sentiment === "positive" ? accent : C.muted;
         return (
@@ -66,14 +67,14 @@ export function ProgressBars({ items, accent }: ProgressBarsProps) {
                   marginLeft: 12,
                 }}
               >
-                {value}%
+                {safeValue}%
               </span>
             </div>
             <div style={{ height: 6, background: C.border, borderRadius: 3, overflow: "hidden" }}>
               <div
                 style={{
                   height: "100%",
-                  width: animated ? `${value}%` : "0%",
+                  width: animated ? `${safeValue}%` : "0%",
                   background: `linear-gradient(90deg, ${color}90, ${color})`,
                   borderRadius: 3,
                   transition: `width ${0.8 + i * 0.12}s cubic-bezier(0.16,1,0.3,1) ${i * 0.08}s`,

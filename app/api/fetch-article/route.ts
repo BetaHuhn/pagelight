@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 
 const MAX_HTML_BYTES = 2_500_000; // ~2.5MB
 const TIMEOUT_MS = 12_000;
+const MAX_REDIRECTS = 5;
 
 function isPrivateIp(ip: string): boolean {
   if (ip.includes(":")) {
@@ -115,33 +116,62 @@ async function readResponseTextWithLimit(res: Response, maxBytes: number): Promi
 async function fetchHtml(
   url: string
 ): Promise<{ html: string; finalUrl: string; contentType: string }> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  let currentUrl = url;
 
-  try {
-    const res = await fetch(url, {
-      method: "GET",
-      redirect: "follow",
-      signal: controller.signal,
-      headers: {
-        accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.1",
-        "user-agent": "Pagelight/1.0 (+local dev)",
-      },
-    });
+  for (let redirects = 0; ; redirects++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch URL (HTTP ${res.status}).`);
+    try {
+      const res = await fetch(currentUrl, {
+        method: "GET",
+        redirect: "manual",
+        signal: controller.signal,
+        headers: {
+          accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.1",
+          "user-agent": "Pagelight/1.0 (+local dev)",
+        },
+      });
+
+      if (res.status >= 300 && res.status < 400) {
+        if (redirects >= MAX_REDIRECTS) throw new Error("Too many redirects.");
+
+        const location = res.headers.get("location");
+        if (!location) throw new Error("Redirect with no Location header.");
+
+        let nextUrl: URL;
+        try {
+          nextUrl = new URL(location, currentUrl);
+        } catch {
+          throw new Error("Invalid redirect URL.");
+        }
+
+        if (nextUrl.protocol !== "http:" && nextUrl.protocol !== "https:") {
+          throw new Error("Only http(s) URLs are supported.");
+        }
+
+        if (isBlockedHost(nextUrl.hostname)) {
+          throw new Error("Redirect destination is not allowed.");
+        }
+
+        currentUrl = nextUrl.toString();
+        continue;
+      }
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch URL (HTTP ${res.status}).`);
+      }
+
+      const contentType = res.headers.get("content-type") || "";
+      if (!/text\/html|application\/xhtml\+xml/i.test(contentType)) {
+        throw new Error(`Unsupported content-type: ${contentType || "unknown"}.`);
+      }
+
+      const html = await readResponseTextWithLimit(res, MAX_HTML_BYTES);
+      return { html, finalUrl: currentUrl, contentType };
+    } finally {
+      clearTimeout(timeout);
     }
-
-    const contentType = res.headers.get("content-type") || "";
-    if (!/text\/html|application\/xhtml\+xml/i.test(contentType)) {
-      throw new Error(`Unsupported content-type: ${contentType || "unknown"}.`);
-    }
-
-    const html = await readResponseTextWithLimit(res, MAX_HTML_BYTES);
-    return { html, finalUrl: res.url || url, contentType };
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
