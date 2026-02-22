@@ -13,6 +13,7 @@ import type { ArticleDocument, ThemeKey } from "./lib/articleTypes";
 import Link from "next/link";
 import { IconChartHistogram, IconCheck, IconKeyframes, IconLayout, IconNews } from "@tabler/icons-react";
 import GlowText from "./components/ui/GlowText";
+import Button from "./components/ui/Button";
 
 const FONT_IMPORT = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap');
@@ -21,6 +22,101 @@ const FONT_IMPORT = `
 export default function Home() {
   const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+  type ShareSource = { kind: "url" | "text"; value: string };
+  const SHARE_PARAM_URL = "u";
+  const SHARE_PARAM_TEXT = "t";
+
+  const base64UrlEncodeBytes = (bytes: Uint8Array) => {
+    let binary = "";
+    const chunkSize = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+    }
+    const b64 = btoa(binary);
+    return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  };
+
+  const base64UrlDecodeToBytes = (b64url: string) => {
+    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((b64url.length + 3) % 4);
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  };
+
+  const encodeTextForParam = async (text: string): Promise<string> => {
+    const trimmed = text.trim();
+    if (!trimmed) return "";
+
+    // Prefer gzip-compressed base64url when available.
+    const hasGzip = typeof (window as any).CompressionStream !== "undefined";
+    if (hasGzip) {
+      try {
+        const cs = new (window as any).CompressionStream("gzip");
+        const stream = new Blob([trimmed]).stream().pipeThrough(cs);
+        const buf = await new Response(stream).arrayBuffer();
+        return `gz.${base64UrlEncodeBytes(new Uint8Array(buf))}`;
+      } catch {
+        // fall through
+      }
+    }
+
+    const bytes = new TextEncoder().encode(trimmed);
+    return `b64.${base64UrlEncodeBytes(bytes)}`;
+  };
+
+  const decodeTextFromParam = async (encoded: string): Promise<string> => {
+    const value = String(encoded || "");
+    if (!value) return "";
+
+    const [prefix, payload] = value.includes(".") ? (value.split(/\.(.+)/) as [string, string]) : (["b64", value] as [string, string]);
+
+    if (prefix === "gz") {
+      const hasGunzip = typeof (window as any).DecompressionStream !== "undefined";
+      if (!hasGunzip) throw new Error("Your browser does not support compressed share links.");
+      const bytes = base64UrlDecodeToBytes(payload);
+      const ds = new (window as any).DecompressionStream("gzip");
+      const stream = new Blob([bytes]).stream().pipeThrough(ds);
+      return await new Response(stream).text();
+    }
+
+    const bytes = base64UrlDecodeToBytes(payload);
+    return new TextDecoder().decode(bytes);
+  };
+
+  const setShareParams = async (source: ShareSource | null) => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete(SHARE_PARAM_URL);
+    // Backwards-compat cleanup: older links may have used ?t= for text.
+    url.searchParams.delete(SHARE_PARAM_TEXT);
+
+    const hashParams = new URLSearchParams(url.hash.startsWith("#") ? url.hash.slice(1) : url.hash);
+    hashParams.delete(SHARE_PARAM_TEXT);
+
+    if (source) {
+      if (source.kind === "url") {
+        url.searchParams.set(SHARE_PARAM_URL, source.value);
+        // Ensure large text never remains in the fragment.
+        if ([...hashParams.keys()].length === 0) url.hash = "";
+        else url.hash = hashParams.toString();
+      } else {
+        const encoded = await encodeTextForParam(source.value);
+
+        // Put text behind the fragment so it isn't sent to the server.
+        if (encoded) hashParams.set(SHARE_PARAM_TEXT, encoded);
+        url.searchParams.delete(SHARE_PARAM_URL);
+
+        url.hash = hashParams.toString();
+      }
+    } else {
+      url.hash = [...hashParams.keys()].length === 0 ? "" : hashParams.toString();
+    }
+
+    window.history.replaceState({}, "", url.toString());
+  };
+
   const textareaRef             = useRef<HTMLTextAreaElement | null>(null);
   const [article,     setArticle]     = useState("");
   const [phase,       setPhase]       = useState<"setup" | "input" | "generating" | "done" | "error">("setup");
@@ -28,6 +124,10 @@ export default function Home() {
   const [articleData, setArticleData] = useState<ArticleDocument | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [booting, setBooting] = useState(true);
+
+  const shareSourceRef = useRef<ShareSource | null>(null);
+  const bootstrappedFromShareRef = useRef(false);
+  const pendingAutoGenerateRef = useRef<ShareSource | null>(null);
 
   const API_KEY_STORAGE_KEY = "pagelight.anthropicApiKey";
   const [apiKey, setApiKey] = useState("");
@@ -46,6 +146,16 @@ export default function Home() {
     }
     setApiKey(key);
     setPhase("input");
+
+    // If the page was opened via a share link, auto-run once the key exists.
+    if (pendingAutoGenerateRef.current) {
+      const src = pendingAutoGenerateRef.current;
+      pendingAutoGenerateRef.current = null;
+      // Defer to allow the phase+key state updates to commit.
+      setTimeout(() => {
+        runGenerate(src);
+      }, 0);
+    }
   }
 
   useEffect(() => {
@@ -64,6 +174,57 @@ export default function Home() {
     }
     setBooting(false);
   }, []);
+
+  useEffect(() => {
+    if (booting) return;
+    if (typeof window === "undefined") return;
+    if (bootstrappedFromShareRef.current) return;
+
+    bootstrappedFromShareRef.current = true;
+
+    const params = new URLSearchParams(window.location.search);
+    const sharedUrl = params.get(SHARE_PARAM_URL);
+    const hashParams = new URLSearchParams(window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash);
+    const sharedText = hashParams.get(SHARE_PARAM_TEXT) || params.get(SHARE_PARAM_TEXT);
+
+    if (!sharedUrl && !sharedText) return;
+
+    const bootstrap = async () => {
+      try {
+        if (sharedUrl) {
+          const src: ShareSource = { kind: "url", value: sharedUrl };
+          shareSourceRef.current = src;
+          setArticle(sharedUrl);
+          if (apiKey) runGenerate(src);
+          else {
+            pendingAutoGenerateRef.current = src;
+            setPhase("setup");
+          }
+          return;
+        }
+
+        if (sharedText) {
+          const decoded = await decodeTextFromParam(sharedText);
+          const src: ShareSource = { kind: "text", value: decoded };
+          shareSourceRef.current = src;
+          setArticle(decoded);
+          if (apiKey) runGenerate(src);
+          else {
+            pendingAutoGenerateRef.current = src;
+            setPhase("setup");
+          }
+          return;
+        }
+      } catch (e: any) {
+        const message = e?.message || String(e);
+        setLog([`Error: ${message}`]);
+        setPhase("error");
+      }
+    };
+
+    bootstrap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [booting]);
 
   const addLog     = (msg: string) => setLog(prev => [...prev, msg]);
   const wordCount  = article.trim().split(/\s+/).filter(Boolean).length;
@@ -113,13 +274,29 @@ export default function Home() {
     return { text, title: json.title ?? null, wordCount: json.wordCount };
   };
 
-  const generate = async () => {
-    if (!canGenerate) return;
+  const runGenerate = async (source?: ShareSource) => {
+    const src: ShareSource | null = source
+      ? source
+      : ((): ShareSource | null => {
+          const value = article.trim();
+          if (!value) return null;
+          return isUrlInput ? { kind: "url", value } : { kind: "text", value: article };
+        })();
+
+    if (!src) return;
+    if (src.kind === "text") {
+      const wc = src.value.trim().split(/\s+/).filter(Boolean).length;
+      if (wc < 50) return;
+    }
+
+    // Track original input for share links.
+    shareSourceRef.current = src;
 
     const key = await ensureApiKey();
     if (!key) {
       setLog(["Error: Anthropic API key is required."]);
       setPhase("setup");
+      pendingAutoGenerateRef.current = src;
       return;
     }
 
@@ -127,33 +304,36 @@ export default function Home() {
     setLog([]);
 
     try {
-      let contentToAnalyze = article;
+      let contentToAnalyze = src.value;
 
-      if (isUrlInput) {
+      if (src.kind === "url") {
         addLog("Fetching article from URL…");
-        const { text, title: fetchedTitle, wordCount: fetchedWordCount } = await fetchArticleFromUrl(article.trim());
+        const { text, title: fetchedTitle } = await fetchArticleFromUrl(src.value.trim());
         contentToAnalyze = text;
         setArticle(text);
-        addLog(
-          `Found ${fetchedTitle ? fetchedTitle : ""}.`
-        );
+        addLog(`Found: ${fetchedTitle ? fetchedTitle : ""}.`);
+      } else {
+        // Keep the textarea in sync with what will be analyzed.
+        setArticle(src.value);
       }
 
       addLog("Sending article to Pagelight AI for analysis…");
 
       wait(500).then(() => {
         addLog("Extracting key data points and narrative structure…");
-      })
+      });
 
       const data = await generateArticleVisualization(contentToAnalyze, key);
 
-      const raw  = ((data as any).content || []).map((b: any) => b.text || "").join("");
+      const raw = ((data as any).content || []).map((b: any) => b.text || "").join("");
 
       addLog("Parsing structured layout…");
-      
+
       // Strip any accidental markdown fences
       const cleaned = raw
-        .replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "")
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/```\s*$/i, "")
         .trim();
 
       let parsed: unknown;
@@ -163,8 +343,11 @@ export default function Home() {
         // Attempt to extract JSON from mixed response
         const match = cleaned.match(/\{[\s\S]+\}/);
         if (match) {
-          try { parsed = JSON.parse(match[0]); }
-          catch { throw new Error("Response contained invalid JSON. Try again."); }
+          try {
+            parsed = JSON.parse(match[0]);
+          } catch {
+            throw new Error("Response contained invalid JSON. Try again.");
+          }
         } else {
           throw new Error("No JSON found in response. Try again.");
         }
@@ -174,27 +357,29 @@ export default function Home() {
       const maybeDoc = parsed as Partial<ArticleDocument>;
       if (!Array.isArray(maybeDoc.sections)) throw new Error("Missing sections array in response. Try again.");
 
-      console.log('Parsed:', parsed)
-
       wait(200).then(() => {
         addLog("Rendering article with interactive widgets…");
-      })
+      });
 
-      await wait(500)
+      await wait(500);
       const doc = parsed as ArticleDocument;
       setArticleData(doc);
 
       const themeKey: ThemeKey = doc.theme;
       const theme = THEMES[themeKey] || THEMES.financial;
       const { accent, accentGradient } = theme;
-      setAccent(accent ?? ACCENT)
-      setAccentGradient(accentGradient ?? accentGradient)
+      setAccent(accent ?? ACCENT);
+      setAccentGradient(accentGradient ?? accentGradient);
       setPhase("done");
 
+      // Persist the share link once we have successfully visualized.
+      await setShareParams(shareSourceRef.current);
     } catch (err: any) {
       const message = err?.message || String(err);
       if (message.toLowerCase().includes("invalid api key")) {
-        try { window.localStorage.removeItem(API_KEY_STORAGE_KEY); } catch {}
+        try {
+          window.localStorage.removeItem(API_KEY_STORAGE_KEY);
+        } catch {}
         setApiKey("");
       }
       addLog(`Error: ${message}`);
@@ -202,7 +387,22 @@ export default function Home() {
     }
   };
 
-  const reset   = () => { setPhase("input"); setArticle(""); setLog([]); setArticleData(null); setAccent('#c8f04a'); setAccentGradient("linear-gradient(135deg, #c8f04a 0%, #89c42a 100%)"); };
+  const generate = async () => {
+    if (!canGenerate) return;
+    return runGenerate();
+  };
+
+  const reset   = () => {
+    setPhase("input");
+    setArticle("");
+    setLog([]);
+    setArticleData(null);
+    setAccent('#c8f04a');
+    setAccentGradient("linear-gradient(135deg, #c8f04a 0%, #89c42a 100%)");
+    shareSourceRef.current = null;
+    pendingAutoGenerateRef.current = null;
+    setShareParams(null);
+  };
   const steps   = [{ label: "Paste Article" }, { label: "Analysing Article" }, { label: "Rendering Visualizations" }];
   const stepIdx = phase === "input" || phase === "error" ? 0 : phase === "generating" ? 1 : 3;
 
@@ -224,7 +424,7 @@ export default function Home() {
         textarea::placeholder { color: ${C.muted}; }
       `}</style>
 
-      <BgCanvas opacity={phase === 'done' ? 0.05 : 0.1} />
+      <BgCanvas opacity={phase === 'done' ? 0.05 : 0.15} />
 
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", overflow: phase === 'done' ? 'auto' : 'hidden', display: "flex", flexDirection: "column", alignItems: 'center', justifyContent: 'center' }}>
         {!booting && (
@@ -276,7 +476,7 @@ export default function Home() {
 
             {phase !== 'generating' && (
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <Link href="/about" style={{
+                {/* <Link href="/about" style={{
                   fontFamily: "'Geist Mono', monospace", fontSize: 11,
                   color: C.muted, background: "transparent",
                   border: `1px solid ${C.border}`, borderRadius: 6,
@@ -286,21 +486,25 @@ export default function Home() {
                 }}
                   onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.white; e.currentTarget.style.borderColor = C.muted; }}
                   onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
-                >What is this?</Link>
+                >What is this?</Link> */}
+
+              <Link href="/about">
+                <Button
+                  kind="secondary"
+                  onClick={reset}
+                >
+                  What is this?
+                </Button>
+              </Link>
               
 
               {phase === "done" && (
-                <button onClick={reset} style={{
-                  fontFamily: "'Geist Mono', monospace", fontSize: 11,
-                  color: C.muted, background: "transparent",
-                  border: `1px solid ${C.border}`, borderRadius: 4,
-                  padding: "5px 12px", cursor: "pointer",
-                  transition: "all 0.2s",
-                  flexShrink: 0
-                }}
-                  onMouseEnter={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.color = C.white; e.currentTarget.style.borderColor = C.muted; }}
-                  onMouseLeave={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
-                >+ New article</button>
+                <Button
+                  kind="secondary"
+                  onClick={reset}
+                >
+                  + Visualize Article
+                </Button>
                 )}
               </div>
             )}
@@ -386,41 +590,32 @@ export default function Home() {
                             </span>
       
                       {apiKey ? (
-                        <button
+                        <Button
                           onClick={() => storeApiKey(apiKey)}
                           disabled={!apiKey}
                           style={{
-                          fontFamily: "'Geist Mono', monospace", fontSize: 12, fontWeight: 500,
-                          background: apiKey ? accentGradient : C.border,
-                          color: apiKey ? C.bg : C.muted,
-                          border: "none", borderRadius: 6,
-                          padding: "10px 14px", cursor: apiKey ? "pointer" : "not-allowed",
-                          transition: "all 0.2s",
-                          letterSpacing: "0.05em",
+                            background: apiKey ? accentGradient : C.border,
+                            color: apiKey ? C.bg : C.muted,
+                            cursor: apiKey ? "pointer" : "not-allowed",
                           }}
-                          onMouseEnter={(e: MouseEvent<HTMLButtonElement>) => { if (apiKey) e.currentTarget.style.opacity = "0.85"; }}
-                          onMouseLeave={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.opacity = "1"; }}
                         >
-                            Save Locally →
-                        </button>
+                          Save Locally →
+                        </Button>
+                        
                       ) : (
                         <a
                           href="https://platform.claude.com/settings/keys"
                           target="_blank"
-                          style={{
-                            fontFamily: "'Geist Mono', monospace", fontSize: 12, fontWeight: 500,
-                            background: accentGradient,
-                            color: C.bg,
-                            border: "none", borderRadius: 6,
-                            padding: "10px 14px",
-                            transition: "all 0.2s",
-                            letterSpacing: "0.05em",
-                            textDecoration: "none",
-                          }}
-                          onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => { if (apiKey) e.currentTarget.style.opacity = "0.85"; }}
-                          onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.opacity = "1"; }}
+                          rel="noopener noreferrer"
                         >
-                          Get Anthropic API Key ↗
+                          <Button
+                            style={{
+                              background: accentGradient,
+                              color: C.bg,
+                            }}
+                          >
+                            Get Anthropic API Key ↗
+                          </Button>
                         </a>
                       )}
                       </div>
@@ -473,24 +668,18 @@ export default function Home() {
                             </div>
                         )}
                       </div>
-      
-                      <button
-                          onClick={generate}
-                          disabled={!canGenerate}
-                          style={{
-                          fontFamily: "'Geist Mono', monospace", fontSize: 12, fontWeight: 500,
+
+                      <Button
+                        disabled={!canGenerate}
+                        onClick={generate}
+                        style={{
                           background: canGenerate ? accentGradient : C.surface,
                           color: canGenerate ? C.bg : C.muted,
-                          border: "none", borderRadius: 6,
-                          padding: "10px 14px", cursor: canGenerate ? "pointer" : "not-allowed",
-                          transition: "all 0.2s",
-                          letterSpacing: "0.05em",
-                          }}
-                          onMouseEnter={(e: MouseEvent<HTMLButtonElement>) => { if (canGenerate) e.currentTarget.style.opacity = "0.85"; }}
-                          onMouseLeave={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.opacity = "1"; }}
+                          cursor: canGenerate ? "pointer" : "not-allowed",
+                        }}
                       >
-                          {phase === "error" ? "Try again →" : "Visualize Article →"}
-                      </button>
+                        {phase === "error" ? "Try again →" : "Visualize Article →"}
+                      </Button>
                       </div>
                     </div>
                   )}

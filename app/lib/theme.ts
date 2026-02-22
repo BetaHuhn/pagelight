@@ -8,7 +8,7 @@ export const C = {
   border:  "#222225",
   text:    "#e8e6e0",
   body:    "#b0aea8",
-  muted:   "#8e8e89",
+  muted:   "#a5a5a3",
   white:   "#ffffff",
   red:     "#e05c5c",
   borderRadius: 14

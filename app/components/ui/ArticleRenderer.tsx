@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { IconCheck, IconCopy } from "@tabler/icons-react";
 import { C, THEMES } from "../../lib/theme";
 import type { ArticleDocument } from "../../lib/articleTypes";
 import { Widget } from "../widgets/Widget";
+import Button from "./Button";
 
 export type ArticleRendererProps = {
   data: ArticleDocument;
@@ -11,6 +14,8 @@ export type ArticleRendererProps = {
 export function ArticleRenderer({ data }: ArticleRendererProps) {
   const theme = THEMES[data.theme] || THEMES.financial;
   const { accent, dim: accentDim } = theme;
+
+  const [copied, setCopied] = useState(false);
 
   return (
     <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", minHeight: "100%", padding: "60px 24px 100px" }}>
@@ -34,8 +39,45 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
               {data.deck}
             </p>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 20, borderTop: `1px solid ${C.border}` }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, paddingTop: 20, borderTop: `1px solid ${C.border}` }}>            
             {data.byline && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: C.muted }}>{data.byline}</span>}
+            {copied ? (
+                <Button
+                  kind="secondary"
+                  onClick={() => {
+                    const url = window.location.href;
+                    navigator.clipboard.writeText(url);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 6,
+                    padding: "10px",
+                    borderRadius: 8,
+                  }}
+                > 
+                  <IconCheck size={14} />
+                  URL Copied!
+                </Button>
+              ) : (
+                <Button
+                  kind="secondary"
+                  onClick={() => {
+                    const url = window.location.href;
+                    navigator.clipboard.writeText(url);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 6,
+                    padding: "10px",
+                    borderRadius: 8,
+                  }}
+                >
+                  <IconCopy size={14} />
+                  Share
+                </Button>
+              )}
           </div>
         </header>
 
