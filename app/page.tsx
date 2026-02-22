@@ -52,6 +52,12 @@ const EXAMPLES = [
     description: "7.7 billion hours spent on AI apps with 17 billion downloads featuring AI across mobile platforms",
     url: "https://techcrunch.com/2025/01/22/ai-apps-saw-over-1-billion-in-consumer-spending-in-2024/",
   },
+  {
+    title: "Stack Overflow Developer Survey 2024",
+    source: "Stack Overflow",
+    description: "65,437 developers surveyed: JavaScript tops languages for the 12th year, PostgreSQL overtakes MySQL, 76% use or plan to use AI tools",
+    url: "https://stackoverflow.blog/2024/08/06/2024-developer-survey/",
+  },
 ];
 
 export default function Home() {
