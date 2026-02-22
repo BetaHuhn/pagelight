@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { C } from "../../lib/theme";
+import type { ProgressBarsProps as ProgressBarsDataProps } from "../../lib/articleTypes";
 
-export function ProgressBars({ items, accent, accentDim }) {
+export type ProgressBarsProps = ProgressBarsDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function ProgressBars({ items, accent }: ProgressBarsProps) {
   const [animated, setAnimated] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setAnimated(true), 200);

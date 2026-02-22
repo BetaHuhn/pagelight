@@ -2,20 +2,29 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+import { ease } from "../../lib/utils";
+import type { GaugeProps as GaugeDataProps } from "../../lib/articleTypes";
 
-export function Gauge({ value, min = 0, max = 100, unit = "", lowLabel = "LOW", highLabel = "HIGH" }) {
-  const canvasRef = useRef(null);
+export type GaugeProps = GaugeDataProps & {
+  accent?: string;
+  accentDim?: string;
+};
+
+export function Gauge({ value, min = 0, max = 100, unit = "", lowLabel = "LOW", highLabel = "HIGH" }: GaugeProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pct = (value - min) / (max - min);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    let raf, startTs = null;
+    if (!ctx) return;
+    let raf = 0;
+    let startTs: number | null = null;
     const DURATION = 1800;
 
-    function draw(ts) {
+    function draw(ts: number) {
+      if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const elapsed = ts - startTs;
       const p = ease(elapsed / DURATION);
@@ -67,7 +76,7 @@ export function Gauge({ value, min = 0, max = 100, unit = "", lowLabel = "LOW", 
     }
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [value, min, max, pct]);
+  }, [value, min, max, pct, lowLabel, highLabel]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

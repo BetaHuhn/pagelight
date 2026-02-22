@@ -2,9 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "../../lib/theme";
+import type { UnitChartProps as UnitChartDataProps } from "../../lib/articleTypes";
 
-export function UnitChart({ total = 100, highlighted, unit, description, accent, accentDim }) {
-  const dotRefs = useRef([]);
+export type UnitChartProps = UnitChartDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function UnitChart({ total = 100, highlighted, unit, description, accent }: UnitChartProps) {
+  const dotRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     let i = 0;
@@ -21,7 +27,7 @@ export function UnitChart({ total = 100, highlighted, unit, description, accent,
     <div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(20, 1fr)", gap: 5, marginBottom: 18 }}>
         {Array.from({ length: total }, (_, i) => (
-          <div key={i} ref={el => (dotRefs.current[i] = el)} style={{ width: "100%", paddingTop: "100%", borderRadius: "50%", background: C.border, transition: "all 0.3s ease" }} />
+          <div key={i} ref={(el: HTMLDivElement | null) => { dotRefs.current[i] = el; }} style={{ width: "100%", paddingTop: "100%", borderRadius: "50%", background: C.border, transition: "all 0.3s ease" }} />
         ))}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>

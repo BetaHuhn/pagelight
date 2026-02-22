@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { C } from "../../lib/theme";
+import type { ComparisonTableProps as ComparisonTableDataProps } from "../../lib/articleTypes";
 
-export function ComparisonTable({ highlight, unit, rows, accent, accentDim }) {
-  const [hovered, setHovered] = useState(null);
+export type ComparisonTableProps = ComparisonTableDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function ComparisonTable({ highlight, unit, rows, accent, accentDim }: ComparisonTableProps) {
+  const [hovered, setHovered] = useState<number | null>(null);
   const [animated, setAnimated] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setAnimated(true), 200);

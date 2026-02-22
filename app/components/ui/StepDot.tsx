@@ -2,7 +2,14 @@
 
 import { C } from "../../lib/theme";
 
-export function StepDot({ n, active, done, accent }) {
+export type StepDotProps = {
+  n: number;
+  active: boolean;
+  done: boolean;
+  accent: string;
+};
+
+export function StepDot({ n, active, done, accent }: StepDotProps) {
   return (
     <div style={{
       width: 18, height: 18, borderRadius: "50%",

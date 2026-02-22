@@ -2,12 +2,18 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+import { ease } from "../../lib/utils";
+import type { DonutChartProps as DonutChartDataProps } from "../../lib/articleTypes";
 
 const SEG_COLORS = ["#f5a623", "#5ce0d4", "#a78bfa", "#e05c5c", "#6ed96e"];
 
-export function DonutChart({ segments, centerValue, centerLabel }) {
-  const canvasRef = useRef(null);
+export type DonutChartProps = DonutChartDataProps & {
+  accent?: string;
+  accentDim?: string;
+};
+
+export function DonutChart({ segments, centerValue, centerLabel }: DonutChartProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const total = segments.reduce((s, sg) => s + sg.value, 0);
   const labelLength = centerLabel?.length ?? 0;
   const centerLabelFontSize = labelLength > 36 ? 6 : labelLength > 24 ? 7 : 8;
@@ -17,10 +23,13 @@ export function DonutChart({ segments, centerValue, centerLabel }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    let raf, startTs = null;
+    if (!ctx) return;
+    let raf = 0;
+    let startTs: number | null = null;
     const DURATION = 1500;
 
-    function draw(ts) {
+    function draw(ts: number) {
+      if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
       const W = canvas.width, H = canvas.height;
@@ -46,7 +55,7 @@ export function DonutChart({ segments, centerValue, centerLabel }) {
       ctx.fillStyle = C.surface;
       ctx.fill();
 
-      raf = requestAnimationFrame(draw);
+      if (p < 1) raf = requestAnimationFrame(draw);
     }
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);

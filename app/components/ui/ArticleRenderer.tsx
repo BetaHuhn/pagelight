@@ -1,20 +1,24 @@
 "use client";
 
 import { C, THEMES } from "../../lib/theme";
+import type { ArticleDocument } from "../../lib/articleTypes";
 import { Widget } from "../widgets/Widget";
 
-export function ArticleRenderer({ data }) {
+export type ArticleRendererProps = {
+  data: ArticleDocument;
+};
+
+export function ArticleRenderer({ data }: ArticleRendererProps) {
   const theme = THEMES[data.theme] || THEMES.financial;
   const { accent, dim: accentDim } = theme;
 
   return (
-    <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", background: C.bg, minHeight: "100%", padding: "60px 24px 100px" }}>
+    <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", minHeight: "100%", padding: "60px 24px 100px" }}>
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
         @keyframes growBar { from { transform: scaleY(0); transform-origin: bottom; } to { transform: scaleY(1); transform-origin: bottom; } }
       `}</style>
-      <div style={{ maxWidth: 780, margin: "0 auto" }}>
-
+      <div style={{ width: "100%" }}>
         <header style={{ marginBottom: 52, animation: "fadeUp 0.5s ease 0.1s both" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <div style={{ height: 1, width: 32, background: accent }} />
@@ -57,7 +61,7 @@ export function ArticleRenderer({ data }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ height: 1, width: 24, background: accentDim }} />
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}>
-              {data.byline}{data.date ? `${data.date}` : ""}
+              {data.date ? `${data.date}` : ""}
             </span>
           </div>
           {data.source && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}>Source: {data.source}</span>}

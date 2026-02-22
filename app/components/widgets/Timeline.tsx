@@ -1,10 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { C } from "../../lib/theme";
+import type { TimelineProps as TimelineDataProps } from "../../lib/articleTypes";
 
-export function Timeline({ events, align, accent, accentDim }) {
-  const scrollerRef = useRef(null);
+export type TimelineProps = TimelineDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function Timeline({ events, align, accent, accentDim }: TimelineProps) {
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -36,13 +43,13 @@ export function Timeline({ events, align, accent, accentDim }) {
     };
   }, [events]);
 
-  const scrollByAmount = direction => {
+  const scrollByAmount = (direction: number) => {
     const el = scrollerRef.current;
     if (!el) return;
     el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: "smooth" });
   };
 
-  const onPointerDown = e => {
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     const el = scrollerRef.current;
     if (!el) return;
     el.setPointerCapture(e.pointerId);
@@ -50,10 +57,10 @@ export function Timeline({ events, align, accent, accentDim }) {
     const startLeft = el.scrollLeft;
     setDragging(true);
 
-    const onMove = ev => {
+    const onMove = (ev: PointerEvent) => {
       el.scrollLeft = startLeft - (ev.clientX - startX);
     };
-    const onUp = ev => {
+    const onUp = (ev: PointerEvent) => {
       el.releasePointerCapture(ev.pointerId);
       el.removeEventListener("pointermove", onMove);
       el.removeEventListener("pointerup", onUp);
@@ -77,7 +84,8 @@ export function Timeline({ events, align, accent, accentDim }) {
     } else {
       targetIndex = 0
     }
-    const targetEl = el.children[0].children[targetIndex];
+    const inner = el.firstElementChild as HTMLElement | null;
+    const targetEl = inner?.children?.[targetIndex] as HTMLElement | undefined;
     if (targetEl) {
       const offset = targetEl.offsetLeft + targetEl.clientWidth / 2 - el.clientWidth / 2;
       el.scrollLeft = offset;

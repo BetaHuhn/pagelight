@@ -2,19 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { C } from "../../lib/theme";
+import type { KpiScorecardsProps as KpiScorecardsDataProps } from "../../lib/articleTypes";
 
-function formatValue(value) {
+function formatValue(value: number | string) {
   if (typeof value === "number") return value.toLocaleString();
   return value;
 }
 
-export function KpiScorecards({ items, accent }) {
+export type KpiScorecardsProps = KpiScorecardsDataProps & {
+  accent: string;
+};
+
+export function KpiScorecards({ items, accent }: KpiScorecardsProps) {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
-    setAnimated(false);
     const t = setTimeout(() => setAnimated(true), 80);
-    return () => clearTimeout(t);
+    return () => {
+      clearTimeout(t);
+      setAnimated(false);
+    };
   }, [items]);
 
   return (

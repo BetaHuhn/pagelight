@@ -2,18 +2,25 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+import { ease } from "../../lib/utils";
+import type { WaterfallChartProps as WaterfallChartDataProps } from "../../lib/articleTypes";
 
-export function WaterfallChart({ steps, unit = "", accent, accentDim }) {
-  const canvasRef = useRef(null);
+export type WaterfallChartProps = WaterfallChartDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function WaterfallChart({ steps, unit = "", accent, accentDim }: WaterfallChartProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-    let raf;
-    let startTs = null;
+    if (!ctx) return;
+    let raf = 0;
+    let startTs: number | null = null;
     const DURATION = 1600;
 
     const resize = () => {
@@ -25,7 +32,7 @@ export function WaterfallChart({ steps, unit = "", accent, accentDim }) {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    const computed = [];
+    const computed: Array<(typeof steps)[number] & { start: number; end: number }> = [];
     let cumulative = 0;
     steps.forEach((step) => {
       const start = cumulative;
@@ -39,12 +46,13 @@ export function WaterfallChart({ steps, unit = "", accent, accentDim }) {
     const max = Math.max(...values);
     const range = max - min || 1;
 
-    function toY(v, h, pad) {
+    function toY(v: number, h: number, pad: { t: number; b: number }) {
       const chartH = h - pad.t - pad.b;
       return pad.t + ((max - v) / range) * chartH;
     }
 
-    function draw(ts) {
+    function draw(ts: number) {
+      if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
 

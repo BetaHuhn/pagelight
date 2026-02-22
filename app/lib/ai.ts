@@ -22,7 +22,7 @@ ROOT SCHEMA:
   "date": "string — e.g. March 2024, or null",
   "theme": "exactly one of: financial | tech | political | environment | economy",
   "sections": [ ...section objects... ],
-  "source": "string — data attribution, or null"
+  "source": "string — attribution like author or publication, or null"
 }
 
 SECTION TYPES — each section is one of these:
@@ -300,29 +300,32 @@ Additional metadata:
 
 Return ONLY the JSON object. Start with { and end with }. Nothing before or after.`;
 
-export const generateArticleVisualization = async (article: string) => {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY || "",
-            "anthropic-version": "2023-06-01",
-            "anthropic-dangerous-direct-browser-access": "true",
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 8000,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Article to visualize:\n\n${article}` }],
-        }),
-      });
+export const generateArticleVisualization = async (article: string, apiKey: string) => {
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 8000,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: `Article to visualize:\n\n${article}` }],
+    }),
+  });
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `API error ${response.status}`);
-      }
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    const message = err?.error?.message || `API error ${response.status}`;
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Invalid API key. Please enter a valid Anthropic API key.");
+    }
+    throw new Error(message);
+  }
 
-      const data = await response.json();
-
-      return data
-}
+  const data = await response.json();
+  return data;
+};

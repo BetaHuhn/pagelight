@@ -2,16 +2,23 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+import { ease } from "../../lib/utils";
+import type { BarChartProps as BarChartDataProps, BarChartBar } from "../../lib/articleTypes";
 
-export function BarChart({ bars, unit, accent, accentDim }) {
+export type BarChartProps = BarChartDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function BarChart({ bars, unit, accent, accentDim }: BarChartProps) {
   const maxVal = Math.max(...bars.map(b => b.value));
-  const barRefs = useRef([]);
+  const barRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
-    let raf, startTs = null;
+    let raf = 0;
+    let startTs: number | null = null;
     const DURATION = 1400;
-    function draw(ts) {
+    function draw(ts: number) {
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
       bars.forEach((bar, i) => {
@@ -36,7 +43,7 @@ export function BarChart({ bars, unit, accent, accentDim }) {
           </div>
           <div style={{ height: 6, background: C.border, borderRadius: 1, overflow: "hidden" }}>
             <div
-              ref={el => (barRefs.current[i] = el)}
+              ref={(el: HTMLDivElement | null) => { barRefs.current[i] = el; }}
               style={{ height: "100%", width: "0%", background: bar.highlight ? accent : accentDim, borderRadius: 1, boxShadow: bar.highlight ? `0 0 10px ${accent}50` : "none" }}
             />
           </div>

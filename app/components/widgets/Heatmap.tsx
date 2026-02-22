@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { C } from "../../lib/theme";
+import type { HeatmapProps as HeatmapDataProps } from "../../lib/articleTypes";
 
-function hexToRgb(hex) {
+type Rgb = { r: number; g: number; b: number };
+
+function hexToRgb(hex: string | undefined | null): Rgb {
   if (!hex || typeof hex !== "string") return { r: 92, g: 224, b: 212 };
   const cleaned = hex.replace("#", "");
   if (cleaned.length !== 6) return { r: 92, g: 224, b: 212 };
@@ -14,13 +17,20 @@ function hexToRgb(hex) {
   };
 }
 
-export function Heatmap({ cells, unit = "", accent }) {
+export type HeatmapProps = HeatmapDataProps & {
+  accent: string;
+};
+
+export function Heatmap({ cells, unit = "", accent }: HeatmapProps) {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
-    setAnimated(false);
-    const t = setTimeout(() => setAnimated(true), 120);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setAnimated(false), 0);
+    const t2 = setTimeout(() => setAnimated(true), 120);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, [cells]);
 
   if (!cells?.length) {

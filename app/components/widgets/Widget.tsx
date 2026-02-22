@@ -1,6 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { C } from "../../lib/theme";
+import type { WidgetSection } from "../../lib/articleTypes";
 import { BarChart } from "./BarChart";
 import { BubbleChart } from "./BubbleChart";
 import { ComparisonTable } from "./ComparisonTable";
@@ -18,99 +20,83 @@ import { UnitChart } from "./UnitChart";
 import { WaterfallChart } from "./WaterfallChart";
 import { WaveCounter } from "./WaveCounter";
 import { WidgetLabel } from "./WidgetLabel";
+import { IconArrowRight } from "@tabler/icons-react";
 
-export function Widget({ section, accent, accentDim }) {
-  const { widgetType, label, insight, props: p = {} } = section;
-  const shared = { accent, accentDim };
+export type WidgetProps = {
+  section: WidgetSection;
+  accent: string;
+  accentDim: string;
+};
 
-  const safe = {
-    bars: p.bars ?? [],
-    segments: p.segments ?? [],
-    events: p.events ?? [],
-    bubbles: p.bubbles ?? [],
-    items: p.items ?? [],
-    rows: p.rows ?? [],
-    points: p.points ?? [],
-    cells: p.cells ?? [],
-    steps: p.steps ?? [],
-    value: p.value ?? 0,
-    highlighted: p.highlighted ?? 0,
-    total: p.total ?? 100,
-  };
+export function Widget({ section, accent, accentDim }: WidgetProps) {
+  const { label, insight } = section;
 
-  let chart;
-  try {
-    switch (widgetType) {
-      case "wave-counter":
-        chart = <WaveCounter {...p} value={safe.value} {...shared} />;
-        break;
-      case "bar-chart":
-        chart = <BarChart {...p} bars={safe.bars} {...shared} />;
-        break;
-      case "donut-chart":
-        chart = <DonutChart {...p} segments={safe.segments} {...shared} />;
-        break;
-      case "gauge":
-        chart = <Gauge {...p} value={safe.value} {...shared} />;
-        break;
-      case "line-chart":
-        chart = <LineChart {...p} points={safe.points} {...shared} />;
-        break;
-      case "timeline":
-        chart = <Timeline {...p} events={safe.events} align={safe.align} {...shared} />;
-        break;
-      case "timeline-magnitude":
-        chart = <TimelineMagnitude {...p} events={safe.events} {...shared} />;
-        break;
-      case "unit-chart":
-        chart = <UnitChart {...p} total={safe.total} highlighted={safe.highlighted} {...shared} />;
-        break;
-      case "stat-comparison":
-        chart = <StatComparison {...p} left={p.left ?? {}} right={p.right ?? {}} {...shared} />;
-        break;
-      case "bubble-chart":
-        chart = <BubbleChart {...p} bubbles={safe.bubbles} {...shared} />;
-        break;
-      case "progress-bars":
-        chart = <ProgressBars {...p} items={safe.items} {...shared} />;
-        break;
-      case "comparison-table":
-        chart = <ComparisonTable {...p} rows={safe.rows} {...shared} />;
-        break;
-      case "slope-chart":
-        chart = <SlopeChart {...p} items={safe.items} accent={accent} />;
-        break;
-      case "heatmap":
-        chart = <Heatmap {...p} cells={safe.cells} accent={accent} />;
-        break;
-      case "waterfall-chart":
-        chart = <WaterfallChart {...p} steps={safe.steps} {...shared} />;
-        break;
-      case "kpi-scorecards":
-        chart = <KpiScorecards {...p} items={safe.items} accent={accent} />;
-        break;
-      default:
-        chart = (
-          <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "12px 0" }}>
-            Unknown widget type: {widgetType}
-          </div>
-        );
-    }
-  } catch (err) {
-    chart = (
-      <div style={{ color: C.red, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "12px 0" }}>
-        Widget render error: {String(err.message)}
-      </div>
-    );
+  let chart: ReactNode;
+  switch (section.widgetType) {
+    case "wave-counter":
+      chart = <WaveCounter {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "bar-chart":
+      chart = <BarChart {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "donut-chart":
+      chart = <DonutChart {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "gauge":
+      chart = <Gauge {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "line-chart":
+      chart = <LineChart {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "timeline":
+      chart = <Timeline {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "timeline-magnitude":
+      chart = <TimelineMagnitude {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "unit-chart":
+      chart = <UnitChart {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "stat-comparison":
+      chart = <StatComparison {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "bubble-chart":
+      chart = <BubbleChart {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "progress-bars":
+      chart = <ProgressBars {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "comparison-table":
+      chart = <ComparisonTable {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "slope-chart":
+      chart = <SlopeChart {...section.props} accent={accent} />;
+      break;
+    case "heatmap":
+      chart = <Heatmap {...section.props} accent={accent} />;
+      break;
+    case "waterfall-chart":
+      chart = <WaterfallChart {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "kpi-scorecards":
+      chart = <KpiScorecards {...section.props} accent={accent} />;
+      break;
+    default:
+      chart = (
+        <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, padding: "12px 0" }}>
+          Unknown widget type: {(section as any).widgetType}
+        </div>
+      );
   }
 
   return (
-    <div data-widget-type={widgetType} style={{ margin: "40px 0", background: C.surface, border: `1px solid ${C.border}`, borderRadius: C.borderRadius, padding: 28, animation: "fadeUp 0.5s ease both" }}>
+    <div data-widget-type={section.widgetType} style={{ margin: "40px 0", background: C.surfaceGradient, border: `1px solid ${C.border}`, borderRadius: C.borderRadius, padding: 28, animation: "fadeUp 0.5s ease both" }}>
       {label && <WidgetLabel text={label} accent={accent} accentDim={accentDim} />}
       {chart}
       {insight && (
-        <div style={{ marginTop: 22, padding: "12px 16px", background: accent + "0d", border: `1px solid ${accentDim}`, borderRadius: C.borderRadius - 5 }}>
-          <p style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.body, margin: 0, lineHeight: 1.6 }}>➔ {insight}</p>
+        <div style={{ marginTop: 22, padding: "12px 16px", background: accent + "0d", border: `1px solid ${accentDim}`, borderRadius: C.borderRadius - 5, display: "flex", alignItems: "center", gap: 12 }}>
+          <IconArrowRight size={13} style={{ color: accent }} />
+          <p style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 13, color: C.body, margin: 0 }}>{insight}</p>
         </div>
       )}
     </div>

@@ -1,6 +1,10 @@
 "use client";
 
-export function ThinkingDots({ accent }) {
+export type ThinkingDotsProps = {
+  accent: string;
+};
+
+export function ThinkingDots({ accent }: ThinkingDotsProps) {
   return (
     <span style={{ display: "inline-flex", gap: 4, alignItems: "center", marginLeft: 8 }}>
       {[0, 1, 2].map(i => (

@@ -1,8 +1,14 @@
 "use client";
 
 import { C } from "../../lib/theme";
+import type { TimelineMagnitudeProps as TimelineMagnitudeDataProps } from "../../lib/articleTypes";
 
-export function TimelineMagnitude({ events, accent, accentDim }) {
+export type TimelineMagnitudeProps = TimelineMagnitudeDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function TimelineMagnitude({ events, accent, accentDim }: TimelineMagnitudeProps) {
   const vals = events.map(e => e.value || 1);
   const maxVal = Math.max(...vals);
   const BAR_H = 120;
@@ -39,9 +45,15 @@ export function TimelineMagnitude({ events, accent, accentDim }) {
         ))}
       </div>
       <div style={{ display: "flex", gap: 20, marginTop: 16 }}>
-        {[["Past", accentDim, false], ["Current", accent, false], ["Projected", null, true]].map(([label, color, dashed]) => (
+        {(
+          [
+            ["Past", accentDim, false],
+            ["Current", accent, false],
+            ["Projected", null, true],
+          ] as const
+        ).map(([label, color, dashed]) => (
           <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div style={{ width: 10, height: 10, borderRadius: 2, background: dashed ? "transparent" : color, border: dashed ? `1px dashed ${C.muted}` : "none" }} />
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: dashed ? "transparent" : (color ?? "transparent"), border: dashed ? `1px dashed ${C.muted}` : "none" }} />
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.muted }}>{label}</span>
           </div>
         ))}

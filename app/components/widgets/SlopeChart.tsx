@@ -2,24 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+import { ease } from "../../lib/utils";
+import type { SlopeChartProps as SlopeChartDataProps } from "../../lib/articleTypes";
 
-export function SlopeChart({ items, unit = "", leftLabel = "Before", rightLabel = "After", accent }) {
+export type SlopeChartProps = SlopeChartDataProps & {
+  accent: string;
+};
+
+export function SlopeChart({ items, unit = "", leftLabel = "Before", rightLabel = "After", accent }: SlopeChartProps) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    let raf;
-    let startTs = null;
+    let raf = 0;
+    let startTs: number | null = null;
     const DURATION = 1300;
 
-    function tick(ts) {
+    function tick(ts: number) {
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
       setProgress(p);
       if (p < 1) raf = requestAnimationFrame(tick);
     }
 
-    setProgress(0);
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [items]);
@@ -43,9 +47,9 @@ export function SlopeChart({ items, unit = "", leftLabel = "Before", rightLabel 
   const xRight = width - 180;
   const top = 52;
   const step = (height - top - 44) / Math.max(1, items.length - 1);
-  const toY = (value) => top + ((max - value) / range) * (height - top - 44);
+  const toY = (value: number) => top + ((max - value) / range) * (height - top - 44);
 
-  const format = (value) => `${value.toLocaleString()}${unit ? ` ${unit}` : ""}`;
+  const format = (value: number) => `${value.toLocaleString()}${unit ? ` ${unit}` : ""}`;
 
   return (
     <div>

@@ -2,16 +2,24 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+import { ease } from "../../lib/utils";
+import type { LineChartProps as LineChartDataProps } from "../../lib/articleTypes";
 
-export function LineChart({ points, yLabel, unit = "", accent, accentDim }) {
-  const canvasRef = useRef(null);
+export type LineChartProps = LineChartDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function LineChart({ points, yLabel, unit = "", accent }: LineChartProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    let raf, startTs = null;
+    if (!ctx) return;
+    let raf = 0;
+    let startTs: number | null = null;
     const DURATION = 1800;
     const resize = () => {
       canvas.width = canvas.offsetWidth;
@@ -21,7 +29,8 @@ export function LineChart({ points, yLabel, unit = "", accent, accentDim }) {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    function draw(ts) {
+    function draw(ts: number) {
+      if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
       const W = canvas.width, H = canvas.height;
@@ -30,8 +39,8 @@ export function LineChart({ points, yLabel, unit = "", accent, accentDim }) {
       const vals = points.map(pt => pt.y);
       const minY = Math.min(...vals), maxY = Math.max(...vals);
       const range = maxY - minY || 1;
-      const toX = i => PAD.l + (i / (points.length - 1)) * cW;
-      const toY = v => PAD.t + cH - ((v - minY) / range) * cH;
+      const toX = (i: number) => PAD.l + (i / (points.length - 1)) * cW;
+      const toY = (v: number) => PAD.t + cH - ((v - minY) / range) * cH;
       ctx.clearRect(0, 0, W, H);
 
       ctx.strokeStyle = C.border;
@@ -104,7 +113,7 @@ export function LineChart({ points, yLabel, unit = "", accent, accentDim }) {
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [points, accent]);
+  }, [points, accent, unit]);
 
   return (
     <div>

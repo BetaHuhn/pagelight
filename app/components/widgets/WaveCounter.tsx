@@ -2,17 +2,25 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "../../lib/theme";
-import { ease } from "./utils";
+import { ease } from "../../lib/utils";
+import type { WaveCounterProps as WaveCounterDataProps } from "../../lib/articleTypes";
 
-export function WaveCounter({ value, prefix = "", suffix = "", unit, description, accent, accentDim }) {
-  const canvasRef = useRef(null);
-  const numRef = useRef(null);
+export type WaveCounterProps = WaveCounterDataProps & {
+  accent: string;
+  accentDim: string;
+};
+
+export function WaveCounter({ value, prefix = "", suffix = "", unit, description, accent, accentDim }: WaveCounterProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const numRef = useRef<HTMLSpanElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    let raf, startTs = null;
+    if (!ctx) return;
+    let raf = 0;
+    let startTs: number | null = null;
     const DURATION = 2200;
     const resize = () => {
       canvas.width = canvas.offsetWidth;
@@ -22,7 +30,8 @@ export function WaveCounter({ value, prefix = "", suffix = "", unit, description
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    function draw(ts) {
+    function draw(ts: number) {
+      if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const elapsed = ts - startTs;
       const p = ease(elapsed / DURATION);
