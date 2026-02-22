@@ -49,6 +49,9 @@ export default function AboutPage() {
           .about-features-grid > * { flex: none !important; min-width: unset !important; }
           .about-main { padding: 24px 0 0 !important; gap: 20px !important; }
           .about-creator { gap: 16px !important; }
+          .about-creator-image { width: 100px !important; height: 100px !important; }
+          .about-creator-bio { min-width: 160px !important; }
+          .about-hero-h1 { font-size: clamp(22px, 6.5vw, 64px) !important; }
         }
       `}</style>
 
@@ -170,6 +173,7 @@ export default function AboutPage() {
               /About
             </p>
             <h1
+              className="about-hero-h1"
               style={{
                 fontFamily: "'Instrument Serif', serif",
                 fontSize: "clamp(36px, 6vw, 64px)",
@@ -345,6 +349,7 @@ export default function AboutPage() {
               }}
             >
               <div
+                className="about-creator-image"
                 style={{
                   width: 175,
                   height: 175,
@@ -365,6 +370,7 @@ export default function AboutPage() {
               </div>
 
               <div
+                className="about-creator-bio"
                 style={{
                   flex: "1 1 280px",
                   minWidth: 240,

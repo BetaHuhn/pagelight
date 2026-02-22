@@ -312,6 +312,10 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
         textarea { resize: none; outline: none; }
         textarea::placeholder { color: ${C.muted}; }
+
+        @media (max-width: 600px) {
+          .home-hero-h1 { font-size: clamp(22px, 6.5vw, 64px) !important; }
+        }
       `}</style>
 
       <BgCanvas opacity={phase === "done" ? 0.05 : 0.1} />
@@ -486,6 +490,7 @@ export default function Home() {
                       Claude
                     </p>
                     <h1
+                      className="home-hero-h1"
                       style={{
                         fontFamily: "'Instrument Serif', serif",
                         fontSize: "clamp(36px, 6vw, 64px)",
