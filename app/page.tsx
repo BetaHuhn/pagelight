@@ -428,11 +428,13 @@ export default function Home() {
 
               {phase !== "generating" && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Link href="/about">
-                    <Button kind="secondary" onClick={reset}>
-                      What is this?
-                    </Button>
-                  </Link>
+                  {!(isMobile && phase === "done") && (
+                    <Link href="/about">
+                      <Button kind="secondary" onClick={reset}>
+                        What is this?
+                      </Button>
+                    </Link>
+                  )}
 
                   {phase === "done" && (
                     <Button kind="secondary" onClick={reset}>
