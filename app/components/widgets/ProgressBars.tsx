@@ -70,15 +70,15 @@ export function ProgressBars({ items, accent }: ProgressBarsProps) {
                 {safeValue}%
               </span>
             </div>
-            <div style={{ height: 6, background: C.border, borderRadius: 3, overflow: "hidden" }}>
+            <div style={{ height: 8, background: C.border, borderRadius: 4, overflow: "hidden" }}>
               <div
                 style={{
                   height: "100%",
                   width: animated ? `${safeValue}%` : "0%",
-                  background: `linear-gradient(90deg, ${color}90, ${color})`,
-                  borderRadius: 3,
+                  background: `linear-gradient(90deg, ${color}80, ${color})`,
+                  borderRadius: 4,
                   transition: `width ${0.8 + i * 0.12}s cubic-bezier(0.16,1,0.3,1) ${i * 0.08}s`,
-                  boxShadow: `0 0 8px ${color}50`,
+                  boxShadow: `0 0 10px ${color}60`,
                 }}
               />
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { C } from "@/lib/theme";
 import type { WidgetSection } from "@/lib/types";
 import { BarChart } from "./BarChart";
@@ -30,6 +31,7 @@ export type WidgetProps = {
 
 export function Widget({ section, accent, accentDim }: WidgetProps) {
   const { label, insight } = section;
+  const [hovered, setHovered] = useState(false);
 
   let chart: ReactNode;
   switch (section.widgetType) {
@@ -99,13 +101,19 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
   return (
     <div
       data-widget-type={section.widgetType}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         margin: "40px 0",
         background: C.surfaceGradient,
-        border: `1px solid ${C.border}`,
+        border: `1px solid ${hovered ? accentDim : C.border}`,
         borderRadius: C.borderRadius,
         padding: 28,
         animation: "fadeUp 0.5s ease both",
+        transition: "border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease",
+        boxShadow: hovered ? `0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px ${accentDim}` : "none",
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
+        willChange: "transform",
       }}
     >
       {label && <WidgetLabel text={label} accent={accent} accentDim={accentDim} />}

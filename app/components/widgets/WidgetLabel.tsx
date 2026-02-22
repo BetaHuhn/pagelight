@@ -21,7 +21,22 @@ export function WidgetLabel({ text, accent, accentDim }: WidgetLabelProps) {
         gap: 8,
       }}
     >
-      <span style={{ color: accentDim }}>◈</span> {text}
+      <span
+        style={{
+          color: accentDim,
+          display: "inline-block",
+          animation: "widgetLabelPulse 2.8s ease-in-out infinite",
+        }}
+      >
+        ◈
+      </span>{" "}
+      {text}
+      <style>{`
+        @keyframes widgetLabelPulse {
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50%       { opacity: 1;   transform: scale(1.2); }
+        }
+      `}</style>
     </div>
   );
 }
