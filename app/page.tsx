@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useLayoutEffect, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { generateArticleVisualization } from "./lib/ai";
 import { C, THEMES } from "./lib/theme";
 import { ArticleRenderer } from "./components/ui/ArticleRenderer";
@@ -11,7 +11,7 @@ import { StepDot } from "./components/ui/StepDot";
 import { wait } from "./lib/utils";
 import type { ArticleDocument, ThemeKey } from "./lib/articleTypes";
 import Link from "next/link";
-import { IconChartHistogram, IconCheck, IconKeyframes, IconLayout, IconNews } from "@tabler/icons-react";
+import { IconChartHistogram, IconCheck, IconKeyframes, IconNews } from "@tabler/icons-react";
 import GlowText from "./components/ui/GlowText";
 import Button from "./components/ui/Button";
 
@@ -19,12 +19,14 @@ const FONT_IMPORT = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap');
 `;
 
+type ShareSource = { kind: "url" | "text"; value: string };
+
+const SHARE_PARAM_URL = "u";
+const SHARE_PARAM_TEXT = "t";
+const API_KEY_STORAGE_KEY = "pagelight.anthropicApiKey";
+
 export default function Home() {
   const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
-  type ShareSource = { kind: "url" | "text"; value: string };
-  const SHARE_PARAM_URL = "u";
-  const SHARE_PARAM_TEXT = "t";
 
   const base64UrlEncodeBytes = (bytes: Uint8Array) => {
     let binary = "";
@@ -117,10 +119,10 @@ export default function Home() {
     window.history.replaceState({}, "", url.toString());
   };
 
-  const textareaRef             = useRef<HTMLTextAreaElement | null>(null);
-  const [article,     setArticle]     = useState("");
-  const [phase,       setPhase]       = useState<"setup" | "input" | "generating" | "done" | "error">("setup");
-  const [log,         setLog]         = useState<string[]>([]);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [article, setArticle] = useState("");
+  const [phase, setPhase] = useState<"setup" | "input" | "generating" | "done" | "error">("setup");
+  const [log, setLog] = useState<string[]>([]);
   const [articleData, setArticleData] = useState<ArticleDocument | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [booting, setBooting] = useState(true);
@@ -129,12 +131,8 @@ export default function Home() {
   const bootstrappedFromShareRef = useRef(false);
   const pendingAutoGenerateRef = useRef<ShareSource | null>(null);
 
-  const API_KEY_STORAGE_KEY = "pagelight.anthropicApiKey";
   const [apiKey, setApiKey] = useState("");
 
-//   const themeKeys = Object.keys(THEMES);
-//   const randomKey = themeKeys[Math.floor(Math.random() * themeKeys.length)];
-  // const [ACCENT, setAccent] = useState(THEMES[randomKey].accent);
   const [ACCENT, setAccent] = useState("#c8f04a");
   const [accentGradient, setAccentGradient] = useState("linear-gradient(135deg, #c8f04a 0%, #89c42a 100%)");
 
@@ -161,8 +159,8 @@ export default function Home() {
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 600);
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useIsomorphicLayoutEffect(() => {
@@ -226,8 +224,8 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [booting]);
 
-  const addLog     = (msg: string) => setLog(prev => [...prev, msg]);
-  const wordCount  = article.trim().split(/\s+/).filter(Boolean).length;
+  const addLog = (msg: string) => setLog((prev) => [...prev, msg]);
+  const wordCount = article.trim().split(/\s+/).filter(Boolean).length;
   const isUrlInput = (() => {
     const value = article.trim();
     if (!value) return false;
@@ -392,18 +390,18 @@ export default function Home() {
     return runGenerate();
   };
 
-  const reset   = () => {
+  const reset = () => {
     setPhase("input");
     setArticle("");
     setLog([]);
     setArticleData(null);
-    setAccent('#c8f04a');
+    setAccent("#c8f04a");
     setAccentGradient("linear-gradient(135deg, #c8f04a 0%, #89c42a 100%)");
     shareSourceRef.current = null;
     pendingAutoGenerateRef.current = null;
     setShareParams(null);
   };
-  const steps   = [{ label: "Paste Article" }, { label: "Analysing Article" }, { label: "Rendering Visualizations" }];
+  const steps = [{ label: "Paste Article" }, { label: "Analysing Article" }, { label: "Rendering Visualizations" }];
   const stepIdx = phase === "input" || phase === "error" ? 0 : phase === "generating" ? 1 : 3;
 
   return (
@@ -424,21 +422,21 @@ export default function Home() {
         textarea::placeholder { color: ${C.muted}; }
       `}</style>
 
-      <BgCanvas opacity={phase === 'done' ? 0.05 : 0.15} />
+      <BgCanvas opacity={phase === "done" ? 0.05 : 0.15} />
 
-      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", overflow: phase === 'done' ? 'auto' : 'hidden', display: "flex", flexDirection: "column", alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", overflow: phase === "done" ? "auto" : "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         {!booting && (
           <>
           <header style={{
             borderRadius: C.borderRadius,
             padding: "0 16px",
             height: 52,
-            width: '100%',
+            width: "100%",
             maxWidth: 800,
             display: "flex", alignItems: "center", justifyContent: "space-between", gap: 64,
             position: "sticky", top: 15, zIndex: 10,
           }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, userSelect: 'none' }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, userSelect: "none" }}>
               <div style={{
                 width: 8, height: 8, borderRadius: "50%",
                 background: ACCENT,
@@ -456,7 +454,7 @@ export default function Home() {
               </span>
             </Link>
 
-            {phase === 'generating' && (
+            {phase === "generating" && (
               <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   {steps.map((s, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, opacity: i > stepIdx + 1 ? 0.3 : 1, transition: "opacity 0.4s", flexShrink: 0, marginRight: 8 }}>
@@ -465,7 +463,9 @@ export default function Home() {
                       fontSize: 13, color: i === stepIdx ? ACCENT : C.muted,
                       fontWeight: 400,
                       display: isMobile ? "none" : "block",
-                      }}>{s.label}</span>
+                      }}>
+                        {s.label}
+                      </span>
                       {i < steps.length - 1 && (
                       <div style={{ width: 24, height: 1, background: C.border, marginLeft: 4 }} />
                       )}
@@ -474,20 +474,8 @@ export default function Home() {
               </div>
             )}
 
-            {phase !== 'generating' && (
+            {phase !== "generating" && (
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                {/* <Link href="/about" style={{
-                  fontFamily: "'Geist Mono', monospace", fontSize: 11,
-                  color: C.muted, background: "transparent",
-                  border: `1px solid ${C.border}`, borderRadius: 6,
-                  padding: "5px 12px", cursor: "pointer",
-                  transition: "all 0.2s",
-                  flexShrink: 0
-                }}
-                  onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.white; e.currentTarget.style.borderColor = C.muted; }}
-                  onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
-                >What is this?</Link> */}
-
               <Link href="/about">
                 <Button
                   kind="secondary"
@@ -510,7 +498,7 @@ export default function Home() {
             )}
           </header>
 
-          <main style={{ flex: 1, display: "flex", flexDirection: "column", width: '100%' }}>
+          <main style={{ flex: 1, display: "flex", flexDirection: "column", width: "100%" }}>
             {/* INPUT PHASE */}
               {(phase === "input" || phase === "error" || phase === "setup") && (
                   <div style={{
