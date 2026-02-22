@@ -13,6 +13,7 @@ export default function ContentSection({
 }) {
   return (
     <section
+      className="content-section"
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
@@ -21,6 +22,11 @@ export default function ContentSection({
         ...style,
       }}
     >
+      <style>{`
+        @media (max-width: 600px) {
+          .content-section { padding: 16px !important; }
+        }
+      `}</style>
       <h2
         style={{
           fontFamily: "'Geist Mono', monospace",

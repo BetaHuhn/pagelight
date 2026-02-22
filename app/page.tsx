@@ -351,6 +351,10 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
         textarea { resize: none; outline: none; }
         textarea::placeholder { color: ${C.muted}; }
+
+        @media (max-width: 600px) {
+          .home-hero-h1 { font-size: clamp(22px, 6.5vw, 64px) !important; }
+        }
       `}</style>
 
       <BgCanvas opacity={phase === "done" ? 0.05 : 0.1} />
@@ -379,7 +383,7 @@ export default function Home() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 64,
+                gap: isMobile ? 12 : 64,
                 position: "sticky",
                 top: 15,
                 zIndex: 10,
@@ -463,11 +467,13 @@ export default function Home() {
 
               {phase !== "generating" && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Link href="/about">
-                    <Button kind="secondary" onClick={reset}>
-                      What is this?
-                    </Button>
-                  </Link>
+                  {!(isMobile && phase === "done") && (
+                    <Link href="/about">
+                      <Button kind="secondary" onClick={reset}>
+                        What is this?
+                      </Button>
+                    </Link>
+                  )}
 
                   {phase === "done" && (
                     <Button kind="secondary" onClick={reset}>
@@ -488,7 +494,7 @@ export default function Home() {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "48px 24px",
+                    padding: isMobile ? "32px 16px" : "48px 24px",
                     animation: "fadeUp 0.5s ease both",
                   }}
                 >
@@ -525,6 +531,7 @@ export default function Home() {
                       Claude
                     </p>
                     <h1
+                      className="home-hero-h1"
                       style={{
                         fontFamily: "'Instrument Serif', serif",
                         fontSize: "clamp(36px, 6vw, 64px)",
@@ -597,8 +604,10 @@ export default function Home() {
                           padding: "8px",
                           borderTop: `1px solid ${C.border}`,
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: isMobile ? "column" : "row",
+                          alignItems: isMobile ? "stretch" : "center",
                           justifyContent: "space-between",
+                          gap: isMobile ? 8 : 0,
                           background: C.panel,
                         }}
                       >
@@ -683,12 +692,14 @@ export default function Home() {
                           padding: "8px",
                           borderTop: `1px solid ${C.border}`,
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: isMobile ? "column" : "row",
+                          alignItems: isMobile ? "stretch" : "center",
                           justifyContent: "space-between",
+                          gap: isMobile ? 8 : 0,
                           background: C.panel,
                         }}
                       >
-                        <div style={{ paddingLeft: 12 }}>
+                        <div style={{ paddingLeft: isMobile ? 0 : 12, textAlign: isMobile ? "center" : "left" }}>
                           {phase === "error" && (
                             <div
                               style={{
@@ -744,11 +755,14 @@ export default function Home() {
                   <div
                     style={{
                       display: "flex",
-                      gap: 48,
+                      flexDirection: isMobile ? "column" : "row",
+                      gap: isMobile ? 20 : 48,
                       marginTop: 36,
                       flexWrap: "wrap",
                       justifyContent: "center",
+                      alignItems: isMobile ? "center" : undefined,
                       maxWidth: 600,
+                      width: "100%",
                     }}
                   >
                     {[

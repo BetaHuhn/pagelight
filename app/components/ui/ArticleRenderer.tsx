@@ -19,6 +19,7 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
 
   return (
     <div
+      className="article-renderer-root"
       style={{
         fontFamily: "'IBM Plex Sans', sans-serif",
         minHeight: "100%",
@@ -28,6 +29,9 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
         @keyframes growBar { from { transform: scaleY(0); transform-origin: bottom; } to { transform: scaleY(1); transform-origin: bottom; } }
+        @media (max-width: 600px) {
+          .article-renderer-root { padding: 24px 16px 60px !important; }
+        }
       `}</style>
       <div style={{ width: "100%" }}>
         <header style={{ marginBottom: 52, animation: "fadeUp 0.5s ease 0.1s both" }}>
