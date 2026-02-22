@@ -1,4 +1,5 @@
 import { C } from "@/app/lib/theme";
+import { MouseEvent } from "react";
 
 export default function Button({ kind = 'primary', children, onClick, style, disabled }: { kind?: 'primary' | 'secondary'; children: React.ReactNode; onClick?: () => void; style?: React.CSSProperties; disabled?: boolean }) {
     if (kind === 'primary') {
