@@ -38,6 +38,18 @@ export default function AboutPage() {
             font-weight: 300;
             line-height: 1.8;
         }
+
+        .about-features-grid { display: flex; gap: 18px; flex-wrap: wrap; }
+        .about-features-grid > * { flex: 1 1 120px; min-width: 120px; }
+        .about-main { width: 100%; max-width: 70ch; padding: 48px 8px 0; display: flex; flex-direction: column; gap: 28px; }
+        .about-creator { border-radius: 12px; display: flex; gap: 25px; align-items: center; flex-wrap: wrap; position: relative; }
+
+        @media (max-width: 600px) {
+          .about-features-grid { flex-direction: column !important; gap: 12px !important; }
+          .about-features-grid > * { flex: none !important; min-width: unset !important; }
+          .about-main { padding: 24px 0 0 !important; gap: 20px !important; }
+          .about-creator { gap: 16px !important; }
+        }
       `}</style>
 
       <BgCanvas opacity={0.08} />
@@ -125,6 +137,7 @@ export default function AboutPage() {
         </header>
 
         <main
+          className="about-main"
           style={{
             width: "100%",
             maxWidth: "70ch",
@@ -210,6 +223,7 @@ export default function AboutPage() {
 
           <ContentSection title="Features" accent={ACCENT}>
             <div
+              className="about-features-grid"
               style={{
                 display: "flex",
                 gap: 18,
@@ -320,6 +334,7 @@ export default function AboutPage() {
             style={{ overflow: "hidden" }}
           >
             <div
+              className="about-creator"
               style={{
                 borderRadius: 12,
                 display: "flex",

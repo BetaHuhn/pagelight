@@ -340,7 +340,7 @@ export default function Home() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 64,
+                gap: isMobile ? 12 : 64,
                 position: "sticky",
                 top: 15,
                 zIndex: 10,
@@ -449,7 +449,7 @@ export default function Home() {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "48px 24px",
+                    padding: isMobile ? "32px 16px" : "48px 24px",
                     animation: "fadeUp 0.5s ease both",
                   }}
                 >
@@ -558,8 +558,10 @@ export default function Home() {
                           padding: "8px",
                           borderTop: `1px solid ${C.border}`,
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: isMobile ? "column" : "row",
+                          alignItems: isMobile ? "stretch" : "center",
                           justifyContent: "space-between",
+                          gap: isMobile ? 8 : 0,
                           background: C.panel,
                         }}
                       >
@@ -644,8 +646,10 @@ export default function Home() {
                           padding: "8px",
                           borderTop: `1px solid ${C.border}`,
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: isMobile ? "column" : "row",
+                          alignItems: isMobile ? "stretch" : "center",
                           justifyContent: "space-between",
+                          gap: isMobile ? 8 : 0,
                           background: C.panel,
                         }}
                       >
@@ -705,11 +709,14 @@ export default function Home() {
                   <div
                     style={{
                       display: "flex",
-                      gap: 48,
+                      flexDirection: isMobile ? "column" : "row",
+                      gap: isMobile ? 20 : 48,
                       marginTop: 36,
                       flexWrap: "wrap",
                       justifyContent: "center",
+                      alignItems: isMobile ? "center" : undefined,
                       maxWidth: 600,
+                      width: "100%",
                     }}
                   >
                     {[
