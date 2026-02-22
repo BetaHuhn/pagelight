@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { C } from "../../lib/theme";
-import { ease } from "../../lib/utils";
-import type { BarChartProps as BarChartDataProps, BarChartBar } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import { ease } from "@/lib/utils";
+import type { BarChartProps as BarChartDataProps, BarChartBar } from "@/lib/types";
 
 export type BarChartProps = BarChartDataProps & {
   accent: string;

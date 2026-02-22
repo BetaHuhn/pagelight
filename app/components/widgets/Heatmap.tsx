@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { C } from "../../lib/theme";
-import type { HeatmapProps as HeatmapDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { HeatmapProps as HeatmapDataProps } from "@/lib/types";
 
 type Rgb = { r: number; g: number; b: number };
 

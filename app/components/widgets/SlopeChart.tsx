@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { C } from "../../lib/theme";
-import { ease } from "../../lib/utils";
-import type { SlopeChartProps as SlopeChartDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import { ease } from "@/lib/utils";
+import type { SlopeChartProps as SlopeChartDataProps } from "@/lib/types";
 
 export type SlopeChartProps = SlopeChartDataProps & {
   accent: string;

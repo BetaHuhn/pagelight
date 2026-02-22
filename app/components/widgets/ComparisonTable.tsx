@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { C } from "../../lib/theme";
-import type { ComparisonTableProps as ComparisonTableDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { ComparisonTableProps as ComparisonTableDataProps } from "@/lib/types";
 
 export type ComparisonTableProps = ComparisonTableDataProps & {
   accent: string;

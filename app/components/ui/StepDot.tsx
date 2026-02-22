@@ -1,6 +1,6 @@
 "use client";
 
-import { C } from "../../lib/theme";
+import { C } from "@/lib/theme";
 
 export type StepDotProps = {
   n: number;

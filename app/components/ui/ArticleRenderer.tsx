@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { IconCheck, IconCopy } from "@tabler/icons-react";
-import { C, THEMES } from "../../lib/theme";
-import type { ArticleDocument } from "../../lib/articleTypes";
-import { Widget } from "../widgets/Widget";
+import { C, THEMES } from "@/lib/theme";
+import type { ArticleDocument } from "@/lib/types";
+import { Widget } from "@/components/widgets/Widget";
 import Button from "./Button";
 
 export type ArticleRendererProps = {

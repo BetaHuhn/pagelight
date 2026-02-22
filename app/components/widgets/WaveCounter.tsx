@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { C } from "../../lib/theme";
-import { ease } from "../../lib/utils";
-import type { WaveCounterProps as WaveCounterDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import { ease } from "@/lib/utils";
+import type { WaveCounterProps as WaveCounterDataProps } from "@/lib/types";
 
 export type WaveCounterProps = WaveCounterDataProps & {
   accent: string;

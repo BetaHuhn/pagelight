@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { C } from "../../lib/theme";
-import type { UnitChartProps as UnitChartDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { UnitChartProps as UnitChartDataProps } from "@/lib/types";
 
 export type UnitChartProps = UnitChartDataProps & {
   accent: string;

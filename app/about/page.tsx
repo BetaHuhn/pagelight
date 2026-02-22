@@ -9,10 +9,10 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 
-import { BgCanvas } from "../components/ui/BgCanvas";
-import GlowText from "../components/ui/GlowText";
-import { C } from "../lib/theme";
-import ContentSection from "../components/ui/ContentSection";
+import { BgCanvas } from "@/components/ui/BgCanvas";
+import GlowText from "@/components/ui/GlowText";
+import { C } from "@/lib/theme";
+import ContentSection from "@/components/ui/ContentSection";
 
 const FONT_IMPORT = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap');

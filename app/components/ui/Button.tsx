@@ -1,4 +1,4 @@
-import { C } from "@/app/lib/theme";
+import { C } from "@/lib/theme";
 import { MouseEvent } from "react";
 
 export default function Button({

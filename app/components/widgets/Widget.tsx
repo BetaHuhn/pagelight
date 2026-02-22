@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { C } from "../../lib/theme";
-import type { WidgetSection } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { WidgetSection } from "@/lib/types";
 import { BarChart } from "./BarChart";
 import { BubbleChart } from "./BubbleChart";
 import { ComparisonTable } from "./ComparisonTable";

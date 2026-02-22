@@ -1,4 +1,4 @@
-import { C } from "@/app/lib/theme";
+import { C } from "@/lib/theme";
 
 export default function ContentSection({
   title,

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { C } from "../../lib/theme";
-import { ease } from "../../lib/utils";
-import type { DonutChartProps as DonutChartDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import { ease } from "@/lib/utils";
+import type { DonutChartProps as DonutChartDataProps } from "@/lib/types";
 
 const SEG_COLORS = ["#f5a623", "#5ce0d4", "#a78bfa", "#e05c5c", "#6ed96e"];
 

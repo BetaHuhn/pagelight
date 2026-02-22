@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { C } from "../../lib/theme";
-import type { TimelineProps as TimelineDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { TimelineProps as TimelineDataProps } from "@/lib/types";
 
 export type TimelineProps = TimelineDataProps & {
   accent: string;

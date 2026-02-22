@@ -12,8 +12,8 @@ import {
   type TooltipItem,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { C } from "../../lib/theme";
-import type { BubbleChartProps as BubbleChartDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { BubbleChartProps as BubbleChartDataProps } from "@/lib/types";
 
 ChartJS.register(LinearScale, PointElement, Tooltip, ChartDataLabels);
 

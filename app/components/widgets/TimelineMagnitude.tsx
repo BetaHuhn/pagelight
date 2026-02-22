@@ -1,7 +1,7 @@
 "use client";
 
-import { C } from "../../lib/theme";
-import type { TimelineMagnitudeProps as TimelineMagnitudeDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { TimelineMagnitudeProps as TimelineMagnitudeDataProps } from "@/lib/types";
 
 export type TimelineMagnitudeProps = TimelineMagnitudeDataProps & {
   accent: string;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { C } from "../../lib/theme";
-import type { KpiScorecardsProps as KpiScorecardsDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { KpiScorecardsProps as KpiScorecardsDataProps } from "@/lib/types";
 
 function formatValue(value: number | string) {
   if (typeof value === "number") return value.toLocaleString();

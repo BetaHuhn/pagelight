@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { C } from "../../lib/theme";
+import { C } from "@/lib/theme";
 
 export type StatusLogProps = {
   lines: string[];

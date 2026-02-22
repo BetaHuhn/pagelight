@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { C } from "../../lib/theme";
-import type { ProgressBarsProps as ProgressBarsDataProps } from "../../lib/articleTypes";
+import { C } from "@/lib/theme";
+import type { ProgressBarsProps as ProgressBarsDataProps } from "@/lib/types";
 
 export type ProgressBarsProps = ProgressBarsDataProps & {
   accent: string;

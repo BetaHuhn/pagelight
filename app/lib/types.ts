@@ -1,3 +1,5 @@
+export type ShareSource = { kind: "url" | "text"; value: string };
+
 export type ThemeKey = "financial" | "tech" | "political" | "environment" | "economy";
 
 export type ProseSection = {

@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { C } from "../../lib/theme";
-import { ease } from "../../lib/utils";
+import { C } from "@/lib/theme";
+import { ease } from "@/lib/utils";
 import type {
   StatComparisonProps as StatComparisonDataProps,
   StatComparisonSide,
-} from "../../lib/articleTypes";
+} from "@/lib/types";
 
 export type StatComparisonProps = StatComparisonDataProps & {
   accent: string;
