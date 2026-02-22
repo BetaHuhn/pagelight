@@ -314,7 +314,7 @@ export default function Home() {
         textarea::placeholder { color: ${C.muted}; }
       `}</style>
 
-      <BgCanvas opacity={phase === "done" ? 0.05 : 0.15} />
+      <BgCanvas opacity={phase === "done" ? 0.05 : 0.1} />
 
       <div
         style={{
