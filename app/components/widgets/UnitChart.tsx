@@ -10,12 +10,14 @@ export type UnitChartProps = UnitChartDataProps & {
 };
 
 export function UnitChart({ total = 100, highlighted, unit, description, accent }: UnitChartProps) {
+  const safeTotal = Number.isFinite(Number(total)) ? Math.min(100, Math.max(1, Math.trunc(Number(total)))) : 100;
+  const safeHighlighted = Number.isFinite(Number(highlighted)) ? Math.min(safeTotal, Math.max(0, Math.trunc(Number(highlighted)))) : 0;
   const dotRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     let i = 0;
     const interval = setInterval(() => {
-      if (i >= highlighted) {
+      if (i >= safeHighlighted) {
         clearInterval(interval);
         return;
       }
@@ -27,7 +29,7 @@ export function UnitChart({ total = 100, highlighted, unit, description, accent 
       i++;
     }, 22);
     return () => clearInterval(interval);
-  }, [highlighted, accent]);
+  }, [safeHighlighted, accent]);
 
   return (
     <div>
@@ -39,7 +41,7 @@ export function UnitChart({ total = 100, highlighted, unit, description, accent 
           marginBottom: 18,
         }}
       >
-        {Array.from({ length: total }, (_, i) => (
+        {Array.from({ length: safeTotal }, (_, i) => (
           <div
             key={i}
             ref={(el: HTMLDivElement | null) => {
@@ -65,10 +67,10 @@ export function UnitChart({ total = 100, highlighted, unit, description, accent 
             lineHeight: 1,
           }}
         >
-          {highlighted}
+          {safeHighlighted}
         </span>
         <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}>
-          of {total} {unit}
+          of {safeTotal} {unit}
         </span>
       </div>
       {description && (
