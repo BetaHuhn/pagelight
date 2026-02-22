@@ -230,15 +230,12 @@ export default function Home() {
         {!booting && (
           <>
           <header style={{
-            border: `1px solid ${C.border}`,
             borderRadius: C.borderRadius,
             padding: "0 16px",
             height: 52,
             width: '100%',
             maxWidth: 800,
             display: "flex", alignItems: "center", justifyContent: "space-between", gap: 64,
-            background: `${C.surface}cc`,
-            backdropFilter: "blur(12px)",
             position: "sticky", top: 15, zIndex: 10,
           }}>
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, userSelect: 'none' }}>
@@ -262,11 +259,11 @@ export default function Home() {
             {phase === 'generating' && (
               <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   {steps.map((s, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, opacity: i > stepIdx + 1 ? 0.3 : 1, transition: "opacity 0.4s", flexShrink: 0 }}>
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, opacity: i > stepIdx + 1 ? 0.3 : 1, transition: "opacity 0.4s", flexShrink: 0, marginRight: 8 }}>
                       <StepDot n={i + 1} active={i === stepIdx} done={i < stepIdx} accent={ACCENT} />
                       <span style={{
-                      fontSize: 12, color: i === stepIdx ? ACCENT : C.muted,
-                      fontWeight: 'semibold',
+                      fontSize: 13, color: i === stepIdx ? ACCENT : C.muted,
+                      fontWeight: 400,
                       display: isMobile ? "none" : "block",
                       }}>{s.label}</span>
                       {i < steps.length - 1 && (
@@ -277,32 +274,35 @@ export default function Home() {
               </div>
             )}
 
-            {phase === "done" && (
-              <button onClick={reset} style={{
-                fontFamily: "'Geist Mono', monospace", fontSize: 11,
-                color: C.muted, background: "transparent",
-                border: `1px solid ${C.border}`, borderRadius: 4,
-                padding: "5px 12px", cursor: "pointer",
-                transition: "all 0.2s",
-                flexShrink: 0
-              }}
-                onMouseEnter={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.color = C.white; e.currentTarget.style.borderColor = C.muted; }}
-                onMouseLeave={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
-              >+ New article</button>
-            )}
+            {phase !== 'generating' && (
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Link href="/about" style={{
+                  fontFamily: "'Geist Mono', monospace", fontSize: 11,
+                  color: C.muted, background: "transparent",
+                  border: `1px solid ${C.border}`, borderRadius: 6,
+                  padding: "5px 12px", cursor: "pointer",
+                  transition: "all 0.2s",
+                  flexShrink: 0
+                }}
+                  onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.white; e.currentTarget.style.borderColor = C.muted; }}
+                  onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
+                >What is this?</Link>
+              
 
-            {phase !== "done" && phase !== 'generating' && (
-              <Link href="/about" style={{
-                fontFamily: "'Geist Mono', monospace", fontSize: 11,
-                color: C.muted, background: "transparent",
-                border: `1px solid ${C.border}`, borderRadius: 6,
-                padding: "5px 12px", cursor: "pointer",
-                transition: "all 0.2s",
-                flexShrink: 0
-              }}
-                onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.white; e.currentTarget.style.borderColor = C.muted; }}
-                onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
-              >What is this?</Link>
+              {phase === "done" && (
+                <button onClick={reset} style={{
+                  fontFamily: "'Geist Mono', monospace", fontSize: 11,
+                  color: C.muted, background: "transparent",
+                  border: `1px solid ${C.border}`, borderRadius: 4,
+                  padding: "5px 12px", cursor: "pointer",
+                  transition: "all 0.2s",
+                  flexShrink: 0
+                }}
+                  onMouseEnter={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.color = C.white; e.currentTarget.style.borderColor = C.muted; }}
+                  onMouseLeave={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
+                >+ New article</button>
+                )}
+              </div>
             )}
           </header>
 
@@ -385,7 +385,8 @@ export default function Home() {
                             Your API key is stored locally in your browser and never shared with anyone.
                             </span>
       
-                      <button
+                      {apiKey ? (
+                        <button
                           onClick={() => storeApiKey(apiKey)}
                           disabled={!apiKey}
                           style={{
@@ -399,9 +400,29 @@ export default function Home() {
                           }}
                           onMouseEnter={(e: MouseEvent<HTMLButtonElement>) => { if (apiKey) e.currentTarget.style.opacity = "0.85"; }}
                           onMouseLeave={(e: MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.opacity = "1"; }}
-                      >
-                          Save Key →
-                      </button>
+                        >
+                            Save Locally →
+                        </button>
+                      ) : (
+                        <a
+                          href="https://platform.claude.com/settings/keys"
+                          target="_blank"
+                          style={{
+                            fontFamily: "'Geist Mono', monospace", fontSize: 12, fontWeight: 500,
+                            background: accentGradient,
+                            color: C.bg,
+                            border: "none", borderRadius: 6,
+                            padding: "10px 14px",
+                            transition: "all 0.2s",
+                            letterSpacing: "0.05em",
+                            textDecoration: "none",
+                          }}
+                          onMouseEnter={(e: MouseEvent<HTMLAnchorElement>) => { if (apiKey) e.currentTarget.style.opacity = "0.85"; }}
+                          onMouseLeave={(e: MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.opacity = "1"; }}
+                        >
+                          Get Anthropic API Key ↗
+                        </a>
+                      )}
                       </div>
                     </div>
                   ) : (
