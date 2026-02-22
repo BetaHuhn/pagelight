@@ -3,6 +3,16 @@
   <img alt="Dub is the modern, open-source link attribution platform for short links, conversion tracking, and affiliate programs." src="https://github.com/user-attachments/assets/42cf0705-f5a2-4200-bc4a-c5acf0ba9e15">
 </a> -->
 
+<p align="center">
+  <a href="https://pagelight.mxis.ch">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="./screenshots/bannerDark.png">
+        <source media="(prefers-color-scheme: light)" srcset="./screenshots/bannerLight.png">
+        <img alt="Pagelight AI banner" src="./screenshots/bannerDark.png">
+    </picture>
+  </a>
+</p>
+
 <h3 align="center">Pagelight AI</h3>
 
 <p align="center">
@@ -15,12 +25,6 @@
     <a href="#how-it-works"><strong>How it works</strong></a> ·
     <a href="#why-pagelight"><strong>Why Pagelight?</strong></a> ·
     <a href="#local-development"><strong>Local Development</strong></a>
-</p>
-
-<p align="center">
-  <a href="https://pagelight.mxis.ch">
-    <img src="./screenshots/home.png" alt="Pagelight AI" />
-  </a>
 </p>
 
 <br/>
