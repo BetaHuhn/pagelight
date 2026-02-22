@@ -13,7 +13,6 @@ import type { ArticleDocument, ShareSource, ThemeKey } from "./lib/types";
 import Link from "next/link";
 import { IconChartHistogram, IconCheck, IconKeyframes, IconNews } from "@tabler/icons-react";
 import GlowText from "./components/ui/GlowText";
-import PagelightLogo from "./components/ui/PagelightLogo";
 import Button from "./components/ui/Button";
 import { API_KEY_STORAGE_KEY, SHARE_PARAM_URL, SHARE_PARAM_TEXT } from "./lib/constants";
 import { fetchArticleFromUrl } from "./lib/api";
@@ -359,13 +358,15 @@ export default function Home() {
               >
                 <div
                   style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: ACCENT,
+                    boxShadow: `0 0 12px ${ACCENT}`,
                     animation: phase === "generating" ? "pulse 1.5s infinite" : "none",
-                    borderRadius: 6,
                     flexShrink: 0,
                   }}
-                >
-                  <PagelightLogo size={28} accent={ACCENT} />
-                </div>
+                />
                 <span
                   style={{
                     fontFamily: "'Geist Mono', monospace",
