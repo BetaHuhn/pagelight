@@ -1,0 +1,15 @@
+# Dependencies
+node_modules
+
+# Next.js
+.next
+out
+build
+
+# Tooling
+bun.lockb
+coverage
+*.log
+
+# OS
+.DS_Store
