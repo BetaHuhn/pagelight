@@ -1,8 +1,3 @@
-
-<!-- <a href="https://dub.co">
-  <img alt="Dub is the modern, open-source link attribution platform for short links, conversion tracking, and affiliate programs." src="https://github.com/user-attachments/assets/42cf0705-f5a2-4200-bc4a-c5acf0ba9e15">
-</a> -->
-
 <p align="center">
   <a href="https://pagelight.mxis.ch">
     <picture>
@@ -16,14 +11,9 @@
 <h3 align="center">Pagelight AI</h3>
 
 <p align="center">
-    Turn Articles Into Living Stories
-    <br />
-    <a href="https://pagelight.mxis.ch"><strong>Website »</strong></a>
-    <br />
-    <br />
     <a href="#features"><strong>Features</strong></a> ·
     <a href="#how-it-works"><strong>How it works</strong></a> ·
-    <a href="#why-pagelight"><strong>Why Pagelight?</strong></a> ·
+    <a href="#why-pagelight"><strong>Why Pagelight</strong></a> ·
     <a href="#local-development"><strong>Local Development</strong></a>
 </p>
 
@@ -59,7 +49,7 @@ Finally it combines the analyzed data and selected visualizations into a custom 
 
 Before using Pagelight you need to provide a [Anthropic API key](https://platform.claude.com/settings/keys). Your API key will be stored locally in your browser and is never sent to our servers or anyone else except Anthropic.
 
-## Why Pagelight?
+## Why Pagelight
 
 This started as a fun experiment: using AI to spice up long-form reading by pulling out the “interesting bits” and giving them a visual home. Articles are full of numbers, comparisons, and timelines — Pagelight tries to make those moments feel tangible.
 
