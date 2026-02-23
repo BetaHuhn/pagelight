@@ -13,6 +13,15 @@ export type MapWidgetProps = MapWidgetDataProps & {
 const MIN_MARKER_RADIUS = 6;
 const MAX_MARKER_RADIUS = 28;
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function computeCenter(
   markers: Array<{ lat: number; lng: number }>,
 ): [number, number] | null {
@@ -160,15 +169,15 @@ export function MapWidget({
         });
 
         const valueHtml = hasValue
-          ? `<div style="font-size:11px;color:${C.body};margin-top:2px;">${(marker.value as number).toLocaleString()}${unit ? " " + unit : ""}</div>`
+          ? `<div style="font-size:11px;color:${C.body};margin-top:2px;">${(marker.value as number).toLocaleString()}${unit ? " " + escapeHtml(unit) : ""}</div>`
           : "";
         const tooltipHtml = marker.tooltip
-          ? `<div style="font-size:11px;color:${C.muted};margin-top:4px;line-height:1.4;">${marker.tooltip}</div>`
+          ? `<div style="font-size:11px;color:${C.muted};margin-top:4px;line-height:1.4;">${escapeHtml(marker.tooltip)}</div>`
           : "";
 
         const popupContent = `
           <div style="font-family:'IBM Plex Mono',monospace;">
-            <div style="font-weight:600;font-size:12px;color:${accent};">${marker.label}</div>
+            <div style="font-weight:600;font-size:12px;color:${accent};">${escapeHtml(marker.label)}</div>
             ${valueHtml}
             ${tooltipHtml}
           </div>
