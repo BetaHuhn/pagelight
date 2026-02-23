@@ -174,7 +174,7 @@ export function MapWidget({
           </div>
         `;
 
-        circle.bindPopup(popupContent, { className: "pagelight-popup", offset: [0, -radius - 4] });
+        circle.bindPopup(popupContent, { className: "pagelight-popup", offset: [0, -(radius + 2)] });
         circle.bindTooltip(marker.label, {
           direction: "top",
           offset: [0, -radius - 2],
