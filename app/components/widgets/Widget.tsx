@@ -20,6 +20,8 @@ import { UnitChart } from "./UnitChart";
 import { WaterfallChart } from "./WaterfallChart";
 import { WaveCounter } from "./WaveCounter";
 import { WidgetLabel } from "./WidgetLabel";
+import { RadarChart } from "./RadarChart";
+import { Treemap } from "./Treemap";
 
 export type WidgetProps = {
   section: WidgetSection;
@@ -79,6 +81,12 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
       break;
     case "kpi-scorecards":
       chart = <KpiScorecards {...section.props} accent={accent} />;
+      break;
+    case "radar-chart":
+      chart = <RadarChart {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "treemap":
+      chart = <Treemap {...section.props} accent={accent} accentDim={accentDim} />;
       break;
     default:
       chart = (

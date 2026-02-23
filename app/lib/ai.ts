@@ -298,6 +298,42 @@ Use "sentiment": "positive" for good trends, "negative" for bad, "neutral" for i
   }
 }
 
+── WIDGET: radar-chart ──
+Best for: comparing 2–4 entities across 4–8 shared dimensions or criteria (e.g. candidate profiles, country rankings, product scorecards).
+All values in each series must share the same numeric scale.
+{
+  "type": "widget",
+  "widgetType": "radar-chart",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "axes": ["Dimension A", "Dimension B", "Dimension C", "Dimension D"],
+    "series": [
+      { "label": "Entity A", "values": [80, 65, 90, 75] },
+      { "label": "Entity B", "values": [60, 85, 70, 90] }
+    ],
+    "unit": "score"
+  }
+}
+
+── WIDGET: treemap ──
+Best for: showing proportional composition of a whole across 4–12 categories where area encodes relative size.
+{
+  "type": "widget",
+  "widgetType": "treemap",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "nodes": [
+      { "label": "Category A", "value": 45 },
+      { "label": "Category B", "value": 30 },
+      { "label": "Category C", "value": 15 },
+      { "label": "Category D", "value": 10 }
+    ],
+    "unit": "% share"
+  }
+}
+
 STRUCTURE RULES:
 - Divide the article text into 3–5 prose sections
 - Interleave widgets between sections: prose → widget → prose → widget → prose
