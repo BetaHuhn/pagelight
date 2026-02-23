@@ -78,6 +78,9 @@ export function MapWidget({
           font-family: 'IBM Plex Mono', monospace;
           background: ${C.bg};
         }
+        .leaflet-container path.leaflet-interactive:focus {
+          outline: none;
+        }
         .leaflet-control-zoom a {
           background: ${C.surface} !important;
           border-color: ${C.border} !important;
@@ -116,7 +119,7 @@ export function MapWidget({
       const map = L.map(container, {
         center: resolvedCenter,
         zoom: resolvedZoom,
-        scrollWheelZoom: false,
+        scrollWheelZoom: true,
         attributionControl: true,
         zoomControl: true,
       });
@@ -171,7 +174,7 @@ export function MapWidget({
           </div>
         `;
 
-        circle.bindPopup(popupContent, { className: "pagelight-popup" });
+        circle.bindPopup(popupContent, { className: "pagelight-popup", offset: [0, -radius - 4] });
         circle.bindTooltip(marker.label, {
           direction: "top",
           offset: [0, -radius - 2],
