@@ -62,8 +62,8 @@ export function BubbleChart({ bubbles, unit, accent, accentDim }: BubbleChartPro
     const n = bubbles.length;
     const cols = Math.ceil(Math.sqrt(n * 1.5));
     const rows = Math.ceil(n / cols);
-    const MAX_R = 62;
-    const MIN_R = 16;
+    const MAX_R = 36;
+    const MIN_R = 10;
 
     const formatLabel = (label: string) => (label.length > 12 ? `${label.slice(0, 11)}…` : label);
     const formatTiny = (label: string) => {
@@ -85,9 +85,6 @@ export function BubbleChart({ bubbles, unit, accent, accentDim }: BubbleChartPro
       };
     });
 
-    const maxR = Math.max(...points.map((p) => p.r));
-    const pad = Math.ceil(maxR + 10);
-
     const data: ChartData<"bubble", BubblePoint[]> = {
       datasets: [
         {
@@ -107,7 +104,7 @@ export function BubbleChart({ bubbles, unit, accent, accentDim }: BubbleChartPro
       responsive: true,
       maintainAspectRatio: false,
       layout: {
-        padding: { top: pad, bottom: pad, left: pad, right: pad },
+        padding: 8,
       },
       scales: {
         x: { display: false, min: 0, max: cols + 1 },

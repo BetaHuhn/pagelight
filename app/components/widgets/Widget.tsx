@@ -20,7 +20,6 @@ import { UnitChart } from "./UnitChart";
 import { WaterfallChart } from "./WaterfallChart";
 import { WaveCounter } from "./WaveCounter";
 import { WidgetLabel } from "./WidgetLabel";
-import { IconArrowRight } from "@tabler/icons-react";
 
 export type WidgetProps = {
   section: WidgetSection;
@@ -113,23 +112,33 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
       {insight && (
         <div
           style={{
-            marginTop: 22,
-            padding: "12px 16px",
-            background: accent + "0d",
-            border: `1px solid ${accentDim}`,
-            borderRadius: C.borderRadius - 5,
+            marginTop: 20,
+            paddingTop: 16,
+            borderTop: `1px solid ${C.border}`,
             display: "flex",
-            alignItems: "center",
-            gap: 12,
+            alignItems: "baseline",
+            gap: 10,
           }}
         >
-          <IconArrowRight size={13} style={{ color: accent, flexShrink: 0 }} />
+          <span
+            style={{
+              flexShrink: 0,
+              width: 3,
+              height: 3,
+              borderRadius: "50%",
+              background: accent,
+              display: "inline-block",
+              position: "relative",
+              top: -2,
+            }}
+          />
           <p
             style={{
               fontFamily: "'IBM Plex Sans', sans-serif",
-              fontSize: 13,
-              color: C.body,
+              fontSize: 12,
+              color: C.muted,
               margin: 0,
+              lineHeight: 1.6,
             }}
           >
             {insight}

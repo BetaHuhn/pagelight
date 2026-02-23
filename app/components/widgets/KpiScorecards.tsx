@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { C } from "@/lib/theme";
+import { ease } from "@/lib/utils";
 import type { KpiScorecardsProps as KpiScorecardsDataProps } from "@/lib/types";
 
 function formatValue(value: number | string) {
@@ -15,6 +16,10 @@ export type KpiScorecardsProps = KpiScorecardsDataProps & {
 
 export function KpiScorecards({ items, accent }: KpiScorecardsProps) {
   const [animated, setAnimated] = useState(false);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [countValues, setCountValues] = useState<Array<number | string>>(
+    items.map((it) => (typeof it.value === "number" ? 0 : it.value))
+  );
 
   useEffect(() => {
     const t = setTimeout(() => setAnimated(true), 80);
@@ -23,6 +28,31 @@ export function KpiScorecards({ items, accent }: KpiScorecardsProps) {
       setAnimated(false);
     };
   }, [items]);
+
+  useEffect(() => {
+    if (!animated) return;
+    const DURATION = 900;
+    let raf = 0;
+    let startTs: number | null = null;
+
+    const numericItems = items.map((it) =>
+      typeof it.value === "number" ? it.value : null
+    );
+
+    function tick(ts: number) {
+      if (!startTs) startTs = ts;
+      const p = ease((ts - startTs) / DURATION);
+      setCountValues(
+        numericItems.map((target, i) =>
+          target !== null ? target * p : items[i].value
+        )
+      );
+      if (p < 1) raf = requestAnimationFrame(tick);
+    }
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [animated, items]);
 
   return (
     <div
@@ -35,26 +65,48 @@ export function KpiScorecards({ items, accent }: KpiScorecardsProps) {
       {items.map((item, i) => {
         const deltaColor =
           item.sentiment === "negative" ? C.red : item.sentiment === "neutral" ? C.muted : accent;
+        const isHovered = hoveredIdx === i;
+        // Determine decimal precision from the final target value, not the animated intermediate.
+        const isDecimal = typeof item.value === "number" && item.value % 1 !== 0;
+        const displayValue =
+          typeof item.value === "number"
+            ? (countValues[i] as number).toLocaleString(undefined, {
+                minimumFractionDigits: isDecimal ? 1 : 0,
+                maximumFractionDigits: isDecimal ? 2 : 0,
+              })
+            : formatValue(item.value);
+
         return (
           <div
             key={i}
+            onMouseEnter={() => setHoveredIdx(i)}
+            onMouseLeave={() => setHoveredIdx(null)}
             style={{
-              border: `1px solid ${C.border}`,
+              border: `1px solid ${isHovered ? accent + "60" : C.border}`,
               borderRadius: C.borderRadius - 6,
-              background: C.bg,
+              background: isHovered ? C.panel : C.bg,
               padding: "14px 14px 12px",
-              transform: animated ? "translateY(0)" : "translateY(8px)",
+              transform: animated
+                ? isHovered
+                  ? "translateY(-3px) scale(1.01)"
+                  : "translateY(0) scale(1)"
+                : "translateY(8px)",
               opacity: animated ? 1 : 0,
-              transition: `transform 420ms ease ${i * 60}ms, opacity 420ms ease ${i * 60}ms`,
+              transition: `transform 420ms ease ${i * 60}ms, opacity 420ms ease ${i * 60}ms, border-color 0.2s, background 0.2s, box-shadow 0.2s`,
+              boxShadow: isHovered
+                ? `0 6px 24px rgba(0,0,0,0.3), 0 0 0 1px ${accent}30`
+                : "none",
+              cursor: "default",
             }}
           >
             <div
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
                 fontSize: 10,
-                color: C.muted,
+                color: isHovered ? accent : C.muted,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
+                transition: "color 0.2s",
               }}
             >
               {item.label}
@@ -70,7 +122,7 @@ export function KpiScorecards({ items, accent }: KpiScorecardsProps) {
               }}
             >
               {item.prefix || ""}
-              {formatValue(item.value)}
+              {displayValue}
               {item.suffix || ""}
               {item.unit ? (
                 <span

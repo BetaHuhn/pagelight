@@ -29,6 +29,11 @@ export function Gauge({
     let raf = 0;
     let startTs: number | null = null;
     const DURATION = 1800;
+    const CSS_W = 280,
+      CSS_H = 160;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = CSS_W * dpr;
+    canvas.height = CSS_H * dpr;
 
     function draw(ts: number) {
       if (!ctx || !canvas) return;
@@ -36,8 +41,9 @@ export function Gauge({
       const elapsed = ts - startTs;
       const p = ease(elapsed / DURATION);
       const sway = p >= 1 ? Math.sin(elapsed / 1100) * 0.022 : 0;
-      const W = canvas.width,
-        H = canvas.height;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const W = CSS_W,
+        H = CSS_H;
       const cx = W / 2,
         cy = H * 0.72;
       const r = W * 0.37;

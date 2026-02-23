@@ -24,8 +24,9 @@ export function WaterfallChart({ steps, unit = "", accent, accentDim }: Waterfal
     const DURATION = 1600;
 
     const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
     };
 
     resize();
@@ -55,9 +56,10 @@ export function WaterfallChart({ steps, unit = "", accent, accentDim }: Waterfal
       if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
-
-      const w = canvas.width;
-      const h = canvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
       const pad = { t: 22, r: 16, b: 50, l: 56 };
       const chartW = w - pad.l - pad.r;
       const stepW = chartW / Math.max(1, steps.length);

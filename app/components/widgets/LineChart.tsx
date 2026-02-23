@@ -22,8 +22,9 @@ export function LineChart({ points, yLabel, unit = "", accent }: LineChartProps)
     let startTs: number | null = null;
     const DURATION = 1800;
     const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -33,8 +34,10 @@ export function LineChart({ points, yLabel, unit = "", accent }: LineChartProps)
       if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
-      const W = canvas.width,
-        H = canvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const W = canvas.width / dpr,
+        H = canvas.height / dpr;
       const PAD = { t: 20, r: 16, b: 36, l: 52 };
       const cW = W - PAD.l - PAD.r,
         cH = H - PAD.t - PAD.b;
