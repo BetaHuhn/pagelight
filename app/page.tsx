@@ -818,7 +818,7 @@ export default function Home() {
                   </div>
 
                   {/* Examples */}
-                  <div style={{ maxWidth: 780, width: "100%", marginTop: 56 }}>
+                  <div style={{ maxWidth: 780, width: "100%", marginTop: 72 }}>
                     <p
                       style={{
                         fontFamily: "'Geist Mono', monospace",
@@ -895,6 +895,12 @@ export default function Home() {
                               color: C.muted,
                               fontWeight: 300,
                               lineHeight: 1.5,
+                              lineClamp: 2,
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}
                           >
                             {ex.description}
