@@ -31,8 +31,9 @@ export function WaveCounter({
     let startTs: number | null = null;
     const DURATION = 2200;
     const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -44,8 +45,10 @@ export function WaveCounter({
       const elapsed = ts - startTs;
       const p = ease(elapsed / DURATION);
       const frame = elapsed / 1000;
-      const W = canvas.width,
-        H = canvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const W = canvas.width / dpr,
+        H = canvas.height / dpr;
       ctx.clearRect(0, 0, W, H);
 
       for (let w = 0; w < 2; w++) {

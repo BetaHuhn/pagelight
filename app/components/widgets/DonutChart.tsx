@@ -27,13 +27,19 @@ export function DonutChart({ segments, centerValue, centerLabel }: DonutChartPro
     let raf = 0;
     let startTs: number | null = null;
     const DURATION = 1500;
+    const CSS_W = 200,
+      CSS_H = 200;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = CSS_W * dpr;
+    canvas.height = CSS_H * dpr;
 
     function draw(ts: number) {
       if (!ctx || !canvas) return;
       if (!startTs) startTs = ts;
       const p = ease((ts - startTs) / DURATION);
-      const W = canvas.width,
-        H = canvas.height;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const W = CSS_W,
+        H = CSS_H;
       const cx = W / 2,
         cy = H / 2;
       const r = Math.min(W, H) * 0.42,

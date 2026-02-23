@@ -152,7 +152,7 @@ const DEMO_WIDGETS: Array<{ title: string; description: string; section: WidgetS
         value: 81,
         min: 0,
         max: 100,
-        unit: "/ 100",
+        unit: "%",
         lowLabel: "POOR",
         highLabel: "GREAT",
       },
