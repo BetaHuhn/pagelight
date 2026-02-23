@@ -334,6 +334,25 @@ Best for: showing proportional composition of a whole across 4–12 categories w
   }
 }
 
+── WIDGET: map ──
+Best for: geographic data — showing where things are happening across the world or a region. Use when the article mentions specific cities, countries, or locations with associated values.
+Set "scaledMarkers": true when markers have meaningful numeric values so their size reflects magnitude.
+Omit "center" and "zoom" when they should be computed automatically from the markers.
+{
+  "type": "widget",
+  "widgetType": "map",
+  "label": "short chart title",
+  "insight": null,
+  "props": {
+    "markers": [
+      { "lat": 37.4, "lng": -122.1, "label": "Silicon Valley", "value": 98.4, "tooltip": "Brief context or null" },
+      { "lat": 51.5, "lng": -0.1,   "label": "London",         "value": 28.7, "tooltip": null }
+    ],
+    "unit": "B USD",
+    "scaledMarkers": true
+  }
+}
+
 STRUCTURE RULES:
 - Divide the article text into 3–5 prose sections
 - Interleave widgets between sections: prose → widget → prose → widget → prose

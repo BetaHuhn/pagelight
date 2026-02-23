@@ -22,6 +22,7 @@ import { WaveCounter } from "./WaveCounter";
 import { WidgetLabel } from "./WidgetLabel";
 import { RadarChart } from "./RadarChart";
 import { Treemap } from "./Treemap";
+import { MapWidget } from "./MapWidget";
 
 export type WidgetProps = {
   section: WidgetSection;
@@ -87,6 +88,9 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
       break;
     case "treemap":
       chart = <Treemap {...section.props} accent={accent} accentDim={accentDim} />;
+      break;
+    case "map":
+      chart = <MapWidget {...section.props} accent={accent} accentDim={accentDim} />;
       break;
     default:
       chart = (

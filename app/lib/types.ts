@@ -199,6 +199,22 @@ export type TreemapProps = {
   unit?: string;
 };
 
+export type MapMarker = {
+  lat: number;
+  lng: number;
+  label: string;
+  value?: number;
+  tooltip?: string;
+};
+
+export type MapWidgetProps = {
+  markers?: MapMarker[];
+  center?: [number, number];
+  zoom?: number;
+  unit?: string;
+  scaledMarkers?: boolean;
+};
+
 export type KpiScorecard = {
   label: string;
   value: number | string;
@@ -232,7 +248,8 @@ export type WidgetType =
   | "waterfall-chart"
   | "kpi-scorecards"
   | "radar-chart"
-  | "treemap";
+  | "treemap"
+  | "map";
 
 export type WidgetSection =
   | {
@@ -360,6 +377,13 @@ export type WidgetSection =
       label: string;
       insight: string | null;
       props: TreemapProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "map";
+      label: string;
+      insight: string | null;
+      props: MapWidgetProps;
     };
 
 export type ArticleSection = ProseSection | WidgetSection;
