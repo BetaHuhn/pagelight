@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useState } from "react";
 import { C } from "@/lib/theme";
 import type { WidgetSection } from "@/lib/types";
 import { BarChart } from "./BarChart";
@@ -21,7 +20,6 @@ import { UnitChart } from "./UnitChart";
 import { WaterfallChart } from "./WaterfallChart";
 import { WaveCounter } from "./WaveCounter";
 import { WidgetLabel } from "./WidgetLabel";
-import { IconArrowRight } from "@tabler/icons-react";
 
 export type WidgetProps = {
   section: WidgetSection;
@@ -31,7 +29,6 @@ export type WidgetProps = {
 
 export function Widget({ section, accent, accentDim }: WidgetProps) {
   const { label, insight } = section;
-  const [hovered, setHovered] = useState(false);
 
   let chart: ReactNode;
   switch (section.widgetType) {
@@ -101,19 +98,13 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
   return (
     <div
       data-widget-type={section.widgetType}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
         margin: "40px 0",
         background: C.surfaceGradient,
-        border: `1px solid ${hovered ? accentDim : C.border}`,
+        border: `1px solid ${C.border}`,
         borderRadius: C.borderRadius,
         padding: 28,
         animation: "fadeUp 0.5s ease both",
-        transition: "border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease",
-        boxShadow: hovered ? `0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px ${accentDim}` : "none",
-        transform: hovered ? "translateY(-2px)" : "translateY(0)",
-        willChange: "transform",
       }}
     >
       {label && <WidgetLabel text={label} accent={accent} accentDim={accentDim} />}
@@ -121,23 +112,33 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
       {insight && (
         <div
           style={{
-            marginTop: 22,
-            padding: "12px 16px",
-            background: accent + "0d",
-            border: `1px solid ${accentDim}`,
-            borderRadius: C.borderRadius - 5,
+            marginTop: 20,
+            paddingTop: 16,
+            borderTop: `1px solid ${C.border}`,
             display: "flex",
-            alignItems: "center",
-            gap: 12,
+            alignItems: "baseline",
+            gap: 10,
           }}
         >
-          <IconArrowRight size={13} style={{ color: accent, flexShrink: 0 }} />
+          <span
+            style={{
+              flexShrink: 0,
+              width: 3,
+              height: 3,
+              borderRadius: "50%",
+              background: accent,
+              display: "inline-block",
+              position: "relative",
+              top: -2,
+            }}
+          />
           <p
             style={{
               fontFamily: "'IBM Plex Sans', sans-serif",
-              fontSize: 13,
-              color: C.body,
+              fontSize: 12,
+              color: C.muted,
               margin: 0,
+              lineHeight: 1.6,
             }}
           >
             {insight}
