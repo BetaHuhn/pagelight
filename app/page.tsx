@@ -584,6 +584,7 @@ export default function Home() {
                       <input
                         value={apiKey}
                         onChange={(e) => setApiKey(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && apiKey) { e.preventDefault(); storeApiKey(apiKey); } }}
                         placeholder={"Paste your Anthropic API key here to get started"}
                         type="password"
                         autoFocus
@@ -672,6 +673,7 @@ export default function Home() {
                         ref={textareaRef}
                         value={article}
                         onChange={(e) => setArticle(e.target.value)}
+                        onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && canGenerate) { e.preventDefault(); generate(); } }}
                         placeholder={
                           "Paste your article text or URL here — news, research, blog post, report… anything with data or narrative structure"
                         }
