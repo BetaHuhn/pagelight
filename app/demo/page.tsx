@@ -460,6 +460,32 @@ const DEMO_WIDGETS: Array<{ title: string; description: string; section: WidgetS
       },
     },
   },
+  {
+    title: "Map",
+    description:
+      "Interactive map built with Leaflet. Plot locations with labels and value-scaled markers. Click markers for details.",
+    section: {
+      type: "widget",
+      widgetType: "map",
+      label: "Global Tech Hub Investment 2024",
+      insight:
+        "Silicon Valley attracted more than triple the investment of any other city, though Asia-Pacific hubs are growing fastest.",
+      props: {
+        scaledMarkers: true,
+        unit: "B USD",
+        markers: [
+          { lat: 37.4, lng: -122.1, label: "Silicon Valley", value: 98.4, tooltip: "Dominates global VC in AI & semiconductors" },
+          { lat: 51.5, lng: -0.1, label: "London", value: 28.7, tooltip: "Europe's largest tech hub" },
+          { lat: 52.5, lng: 13.4, label: "Berlin", value: 12.3, tooltip: "Strong in fintech & SaaS" },
+          { lat: 35.7, lng: 139.7, label: "Tokyo", value: 18.9, tooltip: "Robotics & semiconductors" },
+          { lat: 1.35, lng: 103.8, label: "Singapore", value: 22.1, tooltip: "Asia-Pacific gateway" },
+          { lat: 22.3, lng: 114.2, label: "Hong Kong", value: 14.5, tooltip: "Fintech & crypto hub" },
+          { lat: 40.7, lng: -74.0, label: "New York", value: 41.2, tooltip: "Fintech, media & adtech" },
+          { lat: 47.6, lng: -122.3, label: "Seattle", value: 19.8, tooltip: "Cloud & e-commerce infrastructure" },
+        ],
+      },
+    },
+  },
 ];
 
 export default function DemoPage() {
