@@ -417,6 +417,49 @@ const DEMO_WIDGETS: Array<{ title: string; description: string; section: WidgetS
       },
     },
   },
+  {
+    title: "Radar Chart",
+    description:
+      "Multi-axis spider chart for comparing entities across shared dimensions. Ideal for profile or scorecard comparisons.",
+    section: {
+      type: "widget",
+      widgetType: "radar-chart",
+      label: "Startup Ecosystem Scorecard 2024",
+      insight:
+        "Silicon Valley still leads on funding and talent depth, but London and Berlin are closing the gap on regulatory clarity and diversity.",
+      props: {
+        axes: ["Funding", "Talent", "Innovation", "Regulation", "Diversity"],
+        series: [
+          { label: "Silicon Valley", values: [98, 92, 95, 55, 62] },
+          { label: "London", values: [75, 82, 78, 80, 74] },
+          { label: "Berlin", values: [58, 70, 72, 82, 78] },
+        ],
+        unit: "score",
+      },
+    },
+  },
+  {
+    title: "Treemap",
+    description:
+      "Proportional rectangles for showing part-of-whole composition. Area encodes relative size at a glance.",
+    section: {
+      type: "widget",
+      widgetType: "treemap",
+      label: "Global AI Investment by Category 2024",
+      insight:
+        "Foundation models captured nearly half of all AI investment in 2024, dwarfing applied AI and infrastructure combined.",
+      props: {
+        nodes: [
+          { label: "Foundation Models", value: 48 },
+          { label: "Applied AI", value: 22 },
+          { label: "AI Infrastructure", value: 16 },
+          { label: "AI Safety", value: 8 },
+          { label: "Robotics", value: 6 },
+        ],
+        unit: "% of total",
+      },
+    },
+  },
 ];
 
 export default function DemoPage() {

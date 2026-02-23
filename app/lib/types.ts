@@ -178,6 +178,27 @@ export type WaterfallChartProps = {
   steps: WaterfallStep[];
 };
 
+export type RadarChartSeries = {
+  label: string;
+  values: number[];
+};
+
+export type RadarChartProps = {
+  axes: string[];
+  series: RadarChartSeries[];
+  unit?: string;
+};
+
+export type TreemapNode = {
+  label: string;
+  value: number;
+};
+
+export type TreemapProps = {
+  nodes: TreemapNode[];
+  unit?: string;
+};
+
 export type KpiScorecard = {
   label: string;
   value: number | string;
@@ -209,7 +230,9 @@ export type WidgetType =
   | "slope-chart"
   | "heatmap"
   | "waterfall-chart"
-  | "kpi-scorecards";
+  | "kpi-scorecards"
+  | "radar-chart"
+  | "treemap";
 
 export type WidgetSection =
   | {
@@ -323,6 +346,20 @@ export type WidgetSection =
       label: string;
       insight: string | null;
       props: KpiScorecardsProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "radar-chart";
+      label: string;
+      insight: string | null;
+      props: RadarChartProps;
+    }
+  | {
+      type: "widget";
+      widgetType: "treemap";
+      label: string;
+      insight: string | null;
+      props: TreemapProps;
     };
 
 export type ArticleSection = ProseSection | WidgetSection;
