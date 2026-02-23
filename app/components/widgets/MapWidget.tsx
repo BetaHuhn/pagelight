@@ -13,6 +13,38 @@ export type MapWidgetProps = MapWidgetDataProps & {
 const MIN_MARKER_RADIUS = 6;
 const MAX_MARKER_RADIUS = 28;
 
+function buildPopupElement(
+  label: string,
+  value: number | undefined | null,
+  unit: string | undefined,
+  tooltip: string | undefined,
+  accent: string,
+): HTMLElement {
+  const wrapper = document.createElement("div");
+  wrapper.style.fontFamily = "'IBM Plex Mono', monospace";
+
+  const labelEl = document.createElement("div");
+  labelEl.style.cssText = `font-weight:600;font-size:12px;color:${accent};`;
+  labelEl.textContent = label;
+  wrapper.appendChild(labelEl);
+
+  if (value !== undefined && value !== null) {
+    const valueEl = document.createElement("div");
+    valueEl.style.cssText = `font-size:11px;color:${C.body};margin-top:2px;`;
+    valueEl.textContent = value.toLocaleString() + (unit ? " " + unit : "");
+    wrapper.appendChild(valueEl);
+  }
+
+  if (tooltip) {
+    const tooltipEl = document.createElement("div");
+    tooltipEl.style.cssText = `font-size:11px;color:${C.muted};margin-top:4px;line-height:1.4;`;
+    tooltipEl.textContent = tooltip;
+    wrapper.appendChild(tooltipEl);
+  }
+
+  return wrapper;
+}
+
 function computeCenter(
   markers: Array<{ lat: number; lng: number }>,
 ): [number, number] | null {
@@ -159,23 +191,19 @@ export function MapWidget({
           fillOpacity: 0.25,
         });
 
-        const valueHtml = hasValue
-          ? `<div style="font-size:11px;color:${C.body};margin-top:2px;">${(marker.value as number).toLocaleString()}${unit ? " " + unit : ""}</div>`
-          : "";
-        const tooltipHtml = marker.tooltip
-          ? `<div style="font-size:11px;color:${C.muted};margin-top:4px;line-height:1.4;">${marker.tooltip}</div>`
-          : "";
+        const popupEl = buildPopupElement(
+          marker.label,
+          hasValue ? (marker.value as number) : undefined,
+          unit,
+          marker.tooltip,
+          accent,
+        );
 
-        const popupContent = `
-          <div style="font-family:'IBM Plex Mono',monospace;">
-            <div style="font-weight:600;font-size:12px;color:${accent};">${marker.label}</div>
-            ${valueHtml}
-            ${tooltipHtml}
-          </div>
-        `;
+        const tooltipEl = document.createElement("div");
+        tooltipEl.textContent = marker.label;
 
-        circle.bindPopup(popupContent, { className: "pagelight-popup", offset: [0, -(radius + 2)] });
-        circle.bindTooltip(marker.label, {
+        circle.bindPopup(popupEl, { className: "pagelight-popup", offset: [0, -(radius + 2)] });
+        circle.bindTooltip(tooltipEl, {
           direction: "top",
           offset: [0, -radius - 2],
           opacity: 1,
