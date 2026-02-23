@@ -335,4 +335,5 @@ export type ArticleDocument = {
   theme: ThemeKey;
   sections: ArticleSection[];
   source: string | null;
+  sourceUrl?: string | null;
 };

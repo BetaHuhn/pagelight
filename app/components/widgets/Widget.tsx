@@ -123,7 +123,7 @@ export function Widget({ section, accent, accentDim }: WidgetProps) {
             gap: 12,
           }}
         >
-          <IconArrowRight size={13} style={{ color: accent }} />
+          <IconArrowRight size={13} style={{ color: accent, flexShrink: 0 }} />
           <p
             style={{
               fontFamily: "'IBM Plex Sans', sans-serif",

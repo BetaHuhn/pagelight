@@ -21,6 +21,45 @@ const FONT_IMPORT = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap');
 `;
 
+const EXAMPLES = [
+  {
+    title: "Putting Numbers on the Global Venture Slowdown",
+    source: "TechCrunch",
+    description: "Global VC funding fell 35% to $415.1B in 2022, with mega-rounds down 42% after a record 2021",
+    url: "https://techcrunch.com/2023/01/17/putting-numbers-on-the-global-venture-slowdown/",
+  },
+  {
+    title: "Tracking Global Data on Electric Vehicles",
+    source: "Our World in Data",
+    description: "1 in 5 new cars sold globally in 2023 was electric — Norway leads at 92%, China at 50%, US at 8%",
+    url: "https://ourworldindata.org/electric-car-sales",
+  },
+  {
+    title: "Generative AI Funding Reached New Heights in 2024",
+    source: "TechCrunch",
+    description: "Generative AI startups raised $56B globally in 2024, a 92% surge over 2023's $29.1B",
+    url: "https://techcrunch.com/2025/01/03/generative-ai-funding-reached-new-heights-in-2024/",
+  },
+  {
+    title: "Apple Q1 2024: iPad Decline Meets iPhone and Services Records",
+    source: "The Verge",
+    description: "Apple reported $119.6B in revenue with Services hitting an all-time record at $23.1B",
+    url: "https://www.theverge.com/2024/2/1/24058442/apple-q1-2024-earnings-iphone",
+  },
+  {
+    title: "AI Apps Saw Over $1 Billion in Consumer Spending in 2024",
+    source: "TechCrunch",
+    description: "7.7 billion hours spent on AI apps with 17 billion downloads featuring AI across mobile platforms",
+    url: "https://techcrunch.com/2025/01/22/ai-apps-saw-over-1-billion-in-consumer-spending-in-2024/",
+  },
+  {
+    title: "Stack Overflow Developer Survey 2024",
+    source: "Stack Overflow",
+    description: "65,437 developers surveyed: JavaScript tops languages for the 12th year, PostgreSQL overtakes MySQL, 76% use or plan to use AI tools",
+    url: "https://stackoverflow.blog/2024/08/06/2024-developer-survey/",
+  },
+];
+
 export default function Home() {
   const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -194,6 +233,7 @@ export default function Home() {
         addLog("Fetching article from URL…");
         const { text, title: fetchedTitle } = await fetchArticleFromUrl(src.value.trim());
         contentToAnalyze = text;
+        setArticle(text);
         addLog(`Found: ${fetchedTitle ? fetchedTitle : ""}.`);
       } else {
         // Keep the textarea in sync with what will be analyzed.
@@ -248,6 +288,9 @@ export default function Home() {
 
       await wait(500);
       const doc = parsed as ArticleDocument;
+      if (src.kind === "url") {
+        doc.sourceUrl = src.value.trim();
+      }
       setArticleData(doc);
 
       const themeKey: ThemeKey = doc.theme;
@@ -311,6 +354,10 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
         textarea { resize: none; outline: none; }
         textarea::placeholder { color: ${C.muted}; }
+
+        @media (max-width: 600px) {
+          .home-hero-h1 { font-size: clamp(22px, 6.5vw, 64px) !important; }
+        }
       `}</style>
 
       <BgCanvas opacity={phase === "done" ? 0.05 : 0.1} />
@@ -339,7 +386,7 @@ export default function Home() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 64,
+                gap: isMobile ? 12 : 64,
                 position: "sticky",
                 top: 15,
                 zIndex: 10,
@@ -423,11 +470,13 @@ export default function Home() {
 
               {phase !== "generating" && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Link href="/about">
-                    <Button kind="secondary">
-                      What is this?
-                    </Button>
-                  </Link>
+                  {!(isMobile && phase === "done") && (
+                    <Link href="/about">
+                      <Button kind="secondary" onClick={reset}>
+                        What is this?
+                      </Button>
+                    </Link>
+                  )}
 
                   {phase === "done" && (
                     <Button kind="secondary" onClick={reset}>
@@ -448,7 +497,7 @@ export default function Home() {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "48px 24px",
+                    padding: isMobile ? "32px 16px" : "48px 24px",
                     animation: "fadeUp 0.5s ease both",
                   }}
                 >
@@ -485,6 +534,7 @@ export default function Home() {
                       Claude
                     </p>
                     <h1
+                      className="home-hero-h1"
                       style={{
                         fontFamily: "'Instrument Serif', serif",
                         fontSize: "clamp(36px, 6vw, 64px)",
@@ -558,8 +608,10 @@ export default function Home() {
                           padding: "8px",
                           borderTop: `1px solid ${C.border}`,
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: isMobile ? "column" : "row",
+                          alignItems: isMobile ? "stretch" : "center",
                           justifyContent: "space-between",
+                          gap: isMobile ? 8 : 0,
                           background: C.panel,
                         }}
                       >
@@ -645,12 +697,14 @@ export default function Home() {
                           padding: "8px",
                           borderTop: `1px solid ${C.border}`,
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: isMobile ? "column" : "row",
+                          alignItems: isMobile ? "stretch" : "center",
                           justifyContent: "space-between",
+                          gap: isMobile ? 8 : 0,
                           background: C.panel,
                         }}
                       >
-                        <div style={{ paddingLeft: 12 }}>
+                        <div style={{ paddingLeft: isMobile ? 0 : 12, textAlign: isMobile ? "center" : "left" }}>
                           {phase === "error" && (
                             <div
                               style={{
@@ -706,11 +760,14 @@ export default function Home() {
                   <div
                     style={{
                       display: "flex",
-                      gap: 48,
+                      flexDirection: isMobile ? "column" : "row",
+                      gap: isMobile ? 20 : 48,
                       marginTop: 36,
                       flexWrap: "wrap",
                       justifyContent: "center",
+                      alignItems: isMobile ? "center" : undefined,
                       maxWidth: 600,
+                      width: "100%",
                     }}
                   >
                     {[
@@ -758,6 +815,93 @@ export default function Home() {
                         <div style={{ fontSize: 13, color: C.muted, fontWeight: 300 }}>{sub}</div>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Examples */}
+                  <div style={{ maxWidth: 780, width: "100%", marginTop: 56 }}>
+                    <p
+                      style={{
+                        fontFamily: "'Geist Mono', monospace",
+                        fontSize: 11,
+                        color: C.muted,
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        marginBottom: 16,
+                        textAlign: "center",
+                      }}
+                    >
+                      Try an example
+                    </p>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                        gap: 12,
+                      }}
+                    >
+                      {EXAMPLES.map((ex) => (
+                        <button
+                          key={ex.url}
+                          onClick={() => {
+                            setArticle(ex.url);
+                            if (phase !== "setup") {
+                              textareaRef.current?.focus();
+                            }
+                          }}
+                          style={{
+                            background: C.surface,
+                            border: `1px solid ${C.border}`,
+                            borderRadius: C.borderRadius,
+                            padding: "14px 16px",
+                            textAlign: "left",
+                            cursor: "pointer",
+                            transition: "border-color 0.2s, background 0.2s",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = ACCENT;
+                            e.currentTarget.style.background = C.panel;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = C.border;
+                            e.currentTarget.style.background = C.surface;
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontFamily: "'Geist Mono', monospace",
+                              fontSize: 9,
+                              color: ACCENT,
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              marginBottom: 6,
+                            }}
+                          >
+                            {ex.source}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              color: C.white,
+                              fontWeight: 500,
+                              lineHeight: 1.4,
+                              marginBottom: 6,
+                            }}
+                          >
+                            {ex.title}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 11,
+                              color: C.muted,
+                              fontWeight: 300,
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {ex.description}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}

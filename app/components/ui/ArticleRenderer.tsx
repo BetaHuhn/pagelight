@@ -19,6 +19,7 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
 
   return (
     <div
+      className="article-renderer-root"
       style={{
         fontFamily: "'IBM Plex Sans', sans-serif",
         minHeight: "100%",
@@ -28,6 +29,9 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
         @keyframes growBar { from { transform: scaleY(0); transform-origin: bottom; } to { transform: scaleY(1); transform-origin: bottom; } }
+        @media (max-width: 600px) {
+          .article-renderer-root { padding: 24px 16px 60px !important; }
+        }
       `}</style>
       <div style={{ width: "100%" }}>
         <header style={{ marginBottom: 52, animation: "fadeUp 0.5s ease 0.1s both" }}>
@@ -194,28 +198,34 @@ export function ArticleRenderer({ data }: ArticleRendererProps) {
               {data.date ? `${data.date}` : ""}
             </span>
           </div>
-          {data.source && (
-            <span
-              style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}
-            >
-              Source:{" "}
-              {(() => {
-                try {
-                  const url = new URL(data.source);
-                  if (url.protocol === "http:" || url.protocol === "https:") {
-                    return (
-                      <a href={data.source} target="_blank" rel="noopener noreferrer" style={{ color: C.muted, textDecoration: "underline" }}>
-                        {data.source}
-                      </a>
-                    );
-                  }
-                } catch {
-                  // not a URL
-                }
-                return data.source;
-              })()}
-            </span>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            {data.source && (
+              <span
+                style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.muted }}
+              >
+                Source: {data.source}
+              </span>
+            )}
+            {data.sourceUrl && (
+              <a
+                href={data.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: 11,
+                  color: accent,
+                  textDecoration: "none",
+                  opacity: 0.8,
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
+              >
+                View original ↗
+              </a>
+            )}
+          </div>
         </footer>
       </div>
     </div>
