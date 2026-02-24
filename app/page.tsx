@@ -395,6 +395,7 @@ export default function Home() {
             >
               <Link
                 href="/"
+                onClick={reset}
                 style={{
                   display: "flex",
                   alignItems: "center",
