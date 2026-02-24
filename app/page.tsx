@@ -16,6 +16,7 @@ import GlowText from "./components/ui/GlowText";
 import Button from "./components/ui/Button";
 import { API_KEY_STORAGE_KEY, SHARE_PARAM_URL, SHARE_PARAM_TEXT } from "./lib/constants";
 import { fetchArticleFromUrl } from "./lib/api";
+import { EXAMPLE_ARTICLE_DATA } from "./lib/example-data";
 
 const FONT_IMPORT = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap');
@@ -843,9 +844,21 @@ export default function Home() {
                         <button
                           key={ex.url}
                           onClick={() => {
-                            setArticle(ex.url);
-                            if (phase !== "setup") {
-                              textareaRef.current?.focus();
+                            const pregenData = EXAMPLE_ARTICLE_DATA[ex.url];
+                            if (pregenData) {
+                              const themeKey = pregenData.theme;
+                              const theme = THEMES[themeKey] || THEMES.financial;
+                              setAccent(theme.accent);
+                              setAccentGradient(theme.accentGradient);
+                              shareSourceRef.current = { kind: "url", value: ex.url };
+                              setArticleData(pregenData);
+                              setPhase("done");
+                              setShareParams({ kind: "url", value: ex.url });
+                            } else {
+                              setArticle(ex.url);
+                              if (phase !== "setup") {
+                                textareaRef.current?.focus();
+                              }
                             }
                           }}
                           style={{
