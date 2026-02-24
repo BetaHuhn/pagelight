@@ -844,7 +844,7 @@ export default function Home() {
                       {EXAMPLES.map((ex) => (
                         <button
                           key={ex.url}
-                          onClick={() => {
+                          onClick={async () => {
                             const pregenData = EXAMPLE_ARTICLE_DATA[ex.url];
                             if (pregenData) {
                               const themeKey = pregenData.theme;
@@ -852,6 +852,19 @@ export default function Home() {
                               setAccent(theme.accent);
                               setAccentGradient(theme.accentGradient);
                               shareSourceRef.current = { kind: "url", value: ex.url };
+                              setLog(["Fetching article from URL…"]);
+                              setPhase("generating");
+                              await wait(800);
+                              setLog((prev) => [...prev, `Found: ${pregenData.title}.`]);
+                              await wait(600);
+                              setLog((prev) => [...prev, "Sending article to Pagelight AI for analysis…"]);
+                              await wait(700);
+                              setLog((prev) => [...prev, "Extracting key data points and narrative structure…"]);
+                              await wait(800);
+                              setLog((prev) => [...prev, "Parsing structured layout…"]);
+                              await wait(500);
+                              setLog((prev) => [...prev, "Rendering article with interactive widgets…"]);
+                              await wait(400);
                               setArticleData(pregenData);
                               setPhase("done");
                               setShareParams({ kind: "url", value: ex.url });
