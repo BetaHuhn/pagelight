@@ -49,6 +49,8 @@ Finally it combines the analyzed data and selected visualizations into a custom 
 
 Before using Pagelight you need to provide a [Anthropic API key](https://platform.claude.com/settings/keys). Your API key will be stored locally in your browser and is never sent to our servers or anyone else except Anthropic.
 
+> Note: this project has been built with the use of AI tools like Claude Code and GitHub Copilot/Agents. 
+
 ## Why Pagelight
 
 This started as a fun experiment: using AI to spice up long-form reading by pulling out the “interesting bits” and giving them a visual home. Articles are full of numbers, comparisons, and timelines — Pagelight tries to make those moments feel tangible.
